@@ -387,9 +387,18 @@
         }
 
         /* Sold Out Mode Styles */
-        .cell-sold-out {
-            font-weight: 600 !important;
-            text-decoration: none !important;  /* Asegurar que no haya línea por defecto */
+        .cell-sold-out, 
+        .cell-sold-out span,
+        .celda-dato-orbita.cell-sold-out,
+        .celda-dato-orbita.cell-sold-out span,
+        .celda-precio-mobile-orbita.cell-sold-out,
+        .celda-precio-mobile-orbita.cell-sold-out span {
+            text-decoration: none !important;
+            background: transparent !important;
+            transition: none !important;
+            color: #000000 !important;
+            font-style: normal !important;
+            font-weight: normal !important;
         }
 
         /* NUCLEAR CSS para strikethrough - MÁXIMA PRIORIDAD */
@@ -3731,17 +3740,22 @@
                                     <span class="toggle-slider"></span>
                                 </label>
                             </div>
-                                <div class="control-group">
-                                    <label class="control-label">Sold Out Color</label>
-                                    <input type="color" class="color-picker" id="soldOutColor" value="#ef4444" onchange="updateSoldOutColor()">
+
+                            <div class="toggle-group">
+                                <span class="toggle-label">Strike Through Line</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="soldOutStrikethrough" onchange="updateSoldOutStyles()">
+                                    <span class="toggle-slider"></span>
+                                </label>
                             </div>
-                                <div class="toggle-group">
-                                    <span class="toggle-label">Strike Through Line</span>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="soldOutStrikethrough" onchange="updateSoldOutStyles()">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                        </div>
+
+                            <div class="toggle-group">
+                                <span class="toggle-label">Disable All Sold Out</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="disableAllSoldOut" onchange="handleDisableAllSoldOut(this.checked)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                                 <div class="toggle-group">
                                     <span class="toggle-label">Transparent Background</span>
                                     <label class="toggle-switch">
@@ -3762,10 +3776,7 @@
                                 <div class="section-toggle">▼</div>
                             </div>
                             <div class="section-content">
-                                <div class="control-group">
-                                    <label class="control-label">Sold Out Style</label>
-                                    <input type="color" class="color-picker" id="soldOutColorSecondary" value="#ef4444" onchange="updateSoldOutColor()">
-                                </div>
+
                             </div>
                         </div>
 
@@ -4492,7 +4503,11 @@
         }
 
         function handleCellClick(event) {
-            const cell = event.target;
+            const cell = event.target.closest('.celda-dato-orbita, .celda-precio-mobile-orbita');
+            if (!cell) return;
+            
+            // Evitar seleccionar la celda del sector
+            if (cell.classList.contains('celda-sector-orbita')) return;
             
             if (isMultiSelectMode) {
                 // Agregar o quitar celda de la selección
@@ -4510,8 +4525,22 @@
                 selectedCellsArray = [cell];
             }
             
-            // Sincronizar el toggle con el estado de las celdas seleccionadas
-            syncToggleWithSelectedCells();
+            // Encontrar y seleccionar/deseleccionar la celda correspondiente
+            const correspondingCell = findCorrespondingCellSimple(cell);
+            if (correspondingCell) {
+                if (cell.classList.contains('cell-selected')) {
+                    correspondingCell.classList.add('cell-selected');
+                    if (!selectedCellsArray.includes(correspondingCell)) {
+                        selectedCellsArray.push(correspondingCell);
+                    }
+                } else {
+                    correspondingCell.classList.remove('cell-selected');
+                    selectedCellsArray = selectedCellsArray.filter(c => c !== correspondingCell);
+                }
+            }
+            
+            // Actualizar el estado del toggle según las celdas seleccionadas
+            updateSoldOutToggleState();
         }
 
         function handleCellDoubleClick(event) {
@@ -4975,7 +5004,7 @@
         function getCurrentSoldOutConfig() {
             return {
                 enabled: document.getElementById('soldOutSelected')?.checked || false,
-                color: document.getElementById('soldOutColor')?.value || '#ef4444',
+                color: '#000000', // Color negro fijo
                 text: document.getElementById('soldOutText')?.value || 'Agotado',
                 strikethrough: document.getElementById('soldOutStrikethrough')?.checked || false,
                 background: document.getElementById('soldOutBackground')?.checked || false
@@ -4992,7 +5021,8 @@
         .celda-precio-mobile-orbita.cell-sold-out,
         .celda-precio-mobile-orbita.cell-sold-out span {
             color: ${config.color} !important;
-            font-weight: bold !important;
+            font-weight: normal !important;
+            font-style: normal !important;
             text-decoration: none !important;
             ${config.strikethrough ? 'text-decoration: line-through !important;' : ''}
         }
@@ -5004,12 +5034,7 @@
         }`;
         }
 
-        function updateSoldOutColor() {
-            const color = document.getElementById('soldOutColor').value;
-            const style = document.createElement('style');
-            style.textContent = `.cell-sold-out { background-color: ${color} !important; }`;
-            document.head.appendChild(style);
-        }
+
 
         function updateRowColor() {
             const rowIndex = parseInt(document.getElementById('rowIndex').value);
@@ -5300,7 +5325,7 @@
                 styles: {
                     headerBg: document.getElementById('headerBgColor').value,
                     headerText: document.getElementById('headerTextColor').value,
-                    soldOutColor: document.getElementById('soldOutColor').value
+                    soldOutColor: '#000000' // Color negro fijo
                 },
                 soldOutText: document.getElementById('soldOutText').value,
                 hasVenueImage: document.getElementById('venueImage').style.display !== 'none'
@@ -6353,143 +6378,176 @@
             // Si hay mezcla (algunas agotadas, otras no), mantener el estado actual del toggle
         }
 
-        function toggleSoldOutMode() {
-            const enabled = document.getElementById('soldOutSelected').checked;
-            console.log('Toggle sold out mode called:', enabled);
-            
-            // Obtener configuraciones
-            const soldOutText = document.getElementById('soldOutText').value || 'Agotado';
-            const soldOutColor = document.getElementById('soldOutColor').value || '#ef4444';
-            const strikethrough = document.getElementById('soldOutStrikethrough').checked;
-            const background = document.getElementById('soldOutBackground').checked;
-            
-            console.log('Configuration:', { soldOutText, soldOutColor, strikethrough, background });
-            
-            // Encontrar celdas seleccionadas
-            const selectedCells = document.querySelectorAll('.cell-selected');
-            console.log('Selected cells found:', selectedCells.length);
-            
-            if (selectedCells.length === 0) {
-                console.log('No selected cells found');
+        function toggleSoldOutMode(cell, enabled) {
+            if (!cell) {
+                console.log('No cell provided to toggleSoldOutMode');
                 return;
             }
             
-            // Procesar cada celda seleccionada
-            selectedCells.forEach((cell) => {
-                const span = cell.querySelector('span');
-                const targetElement = span || cell;
-                
-                    // Guardar precio original
-                    if (!cell.hasAttribute('data-original-price')) {
-                        cell.setAttribute('data-original-price', targetElement.textContent);
-                    }
-                    
-                    // Aplicar estilos sold out con !important
-                    targetElement.textContent = soldOutText;
-                    targetElement.style.setProperty('color', soldOutColor, 'important');
-                    
-                    // Respetar el estado del toggle de línea tachada
-                    if (strikethrough) {
-                        targetElement.style.setProperty('text-decoration', 'line-through', 'important');
-            } else {
-                        targetElement.style.setProperty('text-decoration', 'none', 'important');
-                    }
-                    
-                    if (background) {
-                        const r = parseInt(soldOutColor.slice(1, 3), 16);
-                        const g = parseInt(soldOutColor.slice(3, 5), 16);
-                        const b = parseInt(soldOutColor.slice(5, 7), 16);
-                        cell.style.setProperty('background-color', `rgba(${r}, ${g}, ${b}, 0.1)`, 'important');
-                    } else {
-                    cell.style.removeProperty('background-color');
-                    }
-                    
-                    cell.classList.add('cell-sold-out');
-                
-                // Sincronizar con celda correspondiente
-                const correspondingCell = findCorrespondingCellSimple(cell);
-                if (correspondingCell) {
-                    console.log('Applying styles to corresponding cell:', correspondingCell);
-                    applySameStyles(correspondingCell, true, soldOutText, soldOutColor, strikethrough, background);
+            console.log('Toggle sold out mode called for cell:', cell, 'enabled:', enabled);
+            
+            const span = cell.querySelector('span');
+            const targetElement = span || cell;
+            
+            if (enabled) {
+                // Guardar precio original si aún no se ha guardado
+                if (!cell.hasAttribute('data-original-price')) {
+                    cell.setAttribute('data-original-price', targetElement.textContent);
                 }
-            });
                 
-                // FORZAR sincronización: actualizar TODAS las celdas sold out
-                setTimeout(() => {
-                    forceUpdateAllSoldOutCells();
-                }, 100);
-            
-            // Sincronización final: encontrar todas las posiciones correspondientes
-            setTimeout(() => {
-                forceSyncAllCorrespondingCells();
-            }, 200);
-        }
-
-        // Nueva función para manejar el toggle global de agotado
-        function handleSoldOutToggle(enabled) {
-            console.log('🔄 Global sold out toggle:', enabled);
-            
-            if (!enabled) {
-                // Si se está desactivando, restaurar TODAS las celdas agotadas
-                const allSoldOutCells = document.querySelectorAll('.cell-sold-out');
-                console.log('Restoring all sold out cells:', allSoldOutCells.length);
+                // Aplicar texto "Agotado" en negro y bold
+                targetElement.textContent = 'Agotado';
                 
-                allSoldOutCells.forEach(cell => {
-                    const span = cell.querySelector('span');
-                    const targetElement = span || cell;
+                // Aplicar estilos con !important para asegurar que se apliquen
+                targetElement.style.setProperty('font-weight', '700', 'important');
+                targetElement.style.setProperty('font-style', 'normal', 'important');
+                targetElement.style.setProperty('color', '#000000', 'important');
+                targetElement.style.setProperty('opacity', '1', 'important');
+                
+                cell.style.setProperty('font-weight', '700', 'important');
+                cell.style.setProperty('font-style', 'normal', 'important');
+                cell.style.setProperty('color', '#000000', 'important');
+                cell.style.setProperty('opacity', '1', 'important');
+                
+                // Agregar clase para identificar el estado
+                cell.classList.add('cell-sold-out');
+            } else {
+                // Solo restaurar si la celda está en estado "Agotado"
+                if (cell.classList.contains('cell-sold-out')) {
                     const originalPrice = cell.getAttribute('data-original-price');
-                    
                     if (originalPrice) {
                         // Restaurar precio original
                         targetElement.textContent = originalPrice;
                         
-                        // Limpiar TODOS los estilos inline
-                        targetElement.removeAttribute('style');
-                        cell.removeAttribute('style');
+                        // Restaurar estilos originales
+                        targetElement.style.setProperty('font-weight', '700', 'important');
+                        targetElement.style.setProperty('color', '#121212', 'important');
+                        targetElement.style.setProperty('opacity', '1', 'important');
+                        targetElement.style.removeProperty('font-style');
                         
-                        // Remover el precio original guardado
+                        cell.style.setProperty('font-weight', '700', 'important');
+                        cell.style.setProperty('color', '#121212', 'important');
+                        cell.style.setProperty('opacity', '1', 'important');
+                        cell.style.removeProperty('font-style');
+                        
+                        // Limpiar datos y clases
                         cell.removeAttribute('data-original-price');
+                        cell.classList.remove('cell-sold-out');
                     }
-                    
-                    // Remover TODAS las clases relacionadas
-                    cell.classList.remove('cell-sold-out');
-                    cell.classList.remove('force-strikethrough');
-                    cell.classList.remove('force-no-strikethrough');
-                    
-                    // Buscar y restaurar celda correspondiente
-                    const correspondingCell = findCorrespondingCellSimple(cell);
-                    if (correspondingCell) {
-                        const correspondingSpan = correspondingCell.querySelector('span');
-                        const correspondingTarget = correspondingSpan || correspondingCell;
-                        const correspondingPrice = correspondingCell.getAttribute('data-original-price');
-                        
-                        if (correspondingPrice) {
-                            correspondingTarget.textContent = correspondingPrice;
-                            correspondingTarget.removeAttribute('style');
-                            correspondingCell.removeAttribute('style');
-                            correspondingCell.removeAttribute('data-original-price');
-                        }
-                        
-                        correspondingCell.classList.remove('cell-sold-out');
-                        correspondingCell.classList.remove('force-strikethrough');
-                        correspondingCell.classList.remove('force-no-strikethrough');
-                    }
-                });
+                }
+            }
+        }
+
+        // Función para restaurar una celda individual del estado "Agotado"
+        function restoreCellFromSoldOut(cell) {
+            const span = cell.querySelector('span');
+            const targetElement = span || cell;
+            const originalPrice = cell.getAttribute('data-original-price');
+            
+            if (originalPrice) {
+                // Restaurar precio original
+                targetElement.textContent = originalPrice;
                 
-                // Desmarcar todas las celdas seleccionadas
-                document.querySelectorAll('.cell-selected').forEach(cell => {
-                    cell.classList.remove('cell-selected');
-                });
-            } else {
-                // Si se está activando, solo mostrar los controles
-                toggleSoldOutMode();
+                // Restaurar estilos originales con !important para asegurar que se apliquen
+                targetElement.style.setProperty('font-weight', '700', 'important');
+                targetElement.style.setProperty('color', '#121212', 'important');
+                targetElement.style.setProperty('opacity', '1', 'important');
+                cell.style.setProperty('font-weight', '700', 'important');
+                cell.style.setProperty('color', '#121212', 'important');
+                cell.style.setProperty('opacity', '1', 'important');
+                
+                // Limpiar otros estilos inline
+                targetElement.style.removeProperty('font-style');
+                targetElement.style.removeProperty('text-decoration');
+                cell.style.removeProperty('font-style');
+                cell.style.removeProperty('text-decoration');
+                cell.style.removeProperty('background-color');
+                
+                // Remover el precio original guardado
+                cell.removeAttribute('data-original-price');
             }
             
-            // Actualizar la interfaz
-            const controls = document.getElementById('soldOutControls');
-            if (controls) {
-                controls.style.display = enabled ? 'block' : 'none';
+            // Remover todas las clases relacionadas con el estado "Agotado"
+            cell.classList.remove('cell-sold-out');
+            cell.classList.remove('force-strikethrough');
+            cell.classList.remove('force-no-strikethrough');
+        }
+
+        // Función para manejar el toggle de agotado
+        // Función para verificar y actualizar el estado del toggle según las celdas seleccionadas
+        function updateSoldOutToggleState() {
+            const toggle = document.getElementById('soldOutSelected');
+            const selectedCells = document.querySelectorAll('.cell-selected');
+            
+            // Si no hay celdas seleccionadas, desactivar el toggle
+            if (selectedCells.length === 0) {
+                toggle.checked = false;
+                return;
             }
+            
+            // Verificar si todas las celdas seleccionadas están en estado "Agotado"
+            const allSoldOut = Array.from(selectedCells).every(cell => 
+                cell.classList.contains('cell-sold-out')
+            );
+            
+            // Actualizar el estado del toggle
+            toggle.checked = allSoldOut;
+        }
+
+        function handleSoldOutToggle(enabled) {
+            console.log('🔄 Individual sold out toggle:', enabled);
+            
+            // Obtener solo las celdas seleccionadas
+            const selectedCells = document.querySelectorAll('.cell-selected');
+            selectedCells.forEach(cell => {
+                // Aplicar el cambio a la celda seleccionada
+                toggleSoldOutMode(cell, enabled);
+                
+                // Encontrar y actualizar la celda correspondiente
+                const correspondingCell = findCorrespondingCellSimple(cell);
+                if (correspondingCell) {
+                    toggleSoldOutMode(correspondingCell, enabled);
+                }
+            });
+            
+            // Actualizar el código exportado
+            updateExportedCode();
+        }
+
+        // Función auxiliar para actualizar el código exportado
+        function updateExportedCode() {
+            const exportButton = document.getElementById('mostrarCodigoBtn');
+            if (exportButton) {
+                exportButton.click();
+            }
+        }
+
+        // Función para manejar el toggle global de todos los "Agotado"
+
+        function handleDisableAllSoldOut(disable) {
+            console.log('🔄 Global disable all sold out:', disable);
+            
+            if (disable) {
+                // Desactivar TODAS las celdas agotadas
+                const allSoldOutCells = document.querySelectorAll('.cell-sold-out');
+                console.log('Disabling all sold out cells:', allSoldOutCells.length);
+                
+                allSoldOutCells.forEach(cell => {
+                    restoreCellFromSoldOut(cell);
+                    const correspondingCell = findCorrespondingCellSimple(cell);
+                    if (correspondingCell) {
+                        restoreCellFromSoldOut(correspondingCell);
+                    }
+                });
+
+                // Desactivar el toggle de selección
+                document.getElementById('soldOutSelected').checked = false;
+            }
+            
+            // Aplicar todos los cambios inmediatamente
+            forceUpdateAllSoldOutCells();
+            forceSyncAllCorrespondingCells();
+            updateExportedCode();
         }
         
         function forceSyncAllCorrespondingCells() {
@@ -6497,7 +6555,7 @@
             
             // Obtener configuraciones actuales
                 const soldOutText = document.getElementById('soldOutText').value || 'Agotado';
-            const soldOutColor = document.getElementById('soldOutColor').value || '#ef4444';
+            const soldOutColor = '#000000'; // Color negro fijo
             const strikethrough = document.getElementById('soldOutStrikethrough').checked;
             const background = document.getElementById('soldOutBackground').checked;
             
@@ -6666,17 +6724,19 @@
             }
         }
         
-        function applySameStyles(cell, enabled, soldOutText, soldOutColor, strikethrough, background) {
+        function applySameStyles(cell, enabled) {
             const span = cell.querySelector('span');
             const targetElement = span || cell;
+            
+            // Usar valores fijos
+            const soldOutText = 'Agotado';
+            const soldOutColor = '#000000'; // Color negro fijo
             
             console.log('Applying same styles to:', {
                 cell: cell,
                 enabled: enabled,
                 soldOutText: soldOutText,
                 soldOutColor: soldOutColor,
-                strikethrough: strikethrough,
-                background: background,
                 hasSpan: !!span
             });
             
@@ -6729,74 +6789,57 @@
 
 
 
-        // Función modificada para actualizar el color
-        function updateSoldOutColor() {
-            const config = getCurrentSoldOutConfig();
-            
-            // Sincronizar color pickers
-            const primaryColor = document.getElementById('soldOutColor');
-            const secondaryColor = document.getElementById('soldOutColorSecondary');
-            const changedElement = event ? event.target : primaryColor;
-            const newColor = changedElement.value;
-            
-            if (changedElement.id === 'soldOutColor') {
-                secondaryColor.value = newColor;
-            } else {
-                primaryColor.value = newColor;
-            }
-            
-            // Actualizar todas las celdas agotadas
-            document.querySelectorAll('.cell-sold-out').forEach(cell => {
-                const span = cell.querySelector('span');
-                const targetElement = span || cell;
-                
-                // Aplicar el nuevo color
-                targetElement.style.setProperty('color', config.color, 'important');
-                
-                // Actualizar el background si está habilitado
-                if (config.background) {
-                    const r = parseInt(config.color.slice(1, 3), 16);
-                    const g = parseInt(config.color.slice(3, 5), 16);
-                    const b = parseInt(config.color.slice(5, 7), 16);
-                    cell.style.setProperty('background-color', `rgba(${r}, ${g}, ${b}, 0.1)`, 'important');
-                }
-            });
-            
-            // Forzar actualización del código generado si el modal está visible
-            const codeModal = document.getElementById('codeModal');
-            if (codeModal && codeModal.style.display !== 'none') {
-                generateAndShowCode();
-            }
-        }
+
 
         function forceUpdateAllSoldOutCells() {
             // Verificar si el modo agotado está activo
             const soldOutEnabled = document.getElementById('soldOutSelected').checked;
             
             if (!soldOutEnabled) {
-                // Si está desactivado, restaurar todas las celdas
-                const allSoldOutCells = document.querySelectorAll('.cell-sold-out');
-                allSoldOutCells.forEach(cell => {
-                    const span = cell.querySelector('span');
-                    const targetElement = span || cell;
-                    const originalPrice = cell.getAttribute('data-original-price');
-                    
-                    if (originalPrice) {
-                        targetElement.textContent = originalPrice;
-                        targetElement.removeAttribute('style');
-                        cell.removeAttribute('style');
-                        cell.removeAttribute('data-original-price');
+                // Si está desactivado, restaurar solo las celdas seleccionadas
+                const selectedCells = document.querySelectorAll('.cell-selected');
+                selectedCells.forEach(cell => {
+                    if (cell.classList.contains('cell-sold-out')) {
+                        const span = cell.querySelector('span');
+                        const targetElement = span || cell;
+                        const originalPrice = cell.getAttribute('data-original-price');
+                        
+                        if (originalPrice) {
+                            targetElement.textContent = originalPrice;
+                            targetElement.removeAttribute('style');
+                            cell.removeAttribute('style');
+                            cell.removeAttribute('data-original-price');
+                        }
+                        
+                        cell.classList.remove('cell-sold-out');
+                        cell.classList.remove('force-strikethrough');
+                        cell.classList.remove('force-no-strikethrough');
+
+                        // Restaurar también la celda correspondiente
+                        const correspondingCell = findCorrespondingCellSimple(cell);
+                        if (correspondingCell && correspondingCell.classList.contains('cell-sold-out')) {
+                            const corrSpan = correspondingCell.querySelector('span');
+                            const corrTarget = corrSpan || correspondingCell;
+                            const corrOriginalPrice = correspondingCell.getAttribute('data-original-price');
+                            
+                            if (corrOriginalPrice) {
+                                corrTarget.textContent = corrOriginalPrice;
+                                corrTarget.removeAttribute('style');
+                                correspondingCell.removeAttribute('style');
+                                correspondingCell.removeAttribute('data-original-price');
+                            }
+                            
+                            correspondingCell.classList.remove('cell-sold-out');
+                            correspondingCell.classList.remove('force-strikethrough');
+                            correspondingCell.classList.remove('force-no-strikethrough');
+                        }
                     }
-                    
-                    cell.classList.remove('cell-sold-out');
-                    cell.classList.remove('force-strikethrough');
-                    cell.classList.remove('force-no-strikethrough');
                 });
                 return;
             }
             
             // Si está activo, actualizar los estilos
-            const color = document.getElementById('soldOutColor').value;
+            const color = '#000000'; // Color negro fijo
             const strikethrough = document.getElementById('soldOutStrikethrough').checked;
             const background = document.getElementById('soldOutBackground').checked;
             const soldOutText = document.getElementById('soldOutText').value || 'Agotado';
@@ -6830,7 +6873,7 @@
                     targetElement.style.setProperty('text-decoration', 'none', 'important');
                 }
                 
-                targetElement.style.setProperty('font-weight', 'bold', 'important');
+                targetElement.style.setProperty('font-weight', 'normal', 'important');
                 
                 if (background) {
                     const r = parseInt(color.slice(1, 3), 16);
@@ -6850,7 +6893,7 @@
             const strikethrough = document.getElementById('soldOutStrikethrough').checked;
             const background = document.getElementById('soldOutBackground').checked;
             const soldOutText = document.getElementById('soldOutText').value || 'Agotado';
-            const soldOutColor = document.getElementById('soldOutColor').value || '#ef4444';
+            const soldOutColor = '#000000'; // Color negro fijo
             
             console.log('Current toggle states:', { strikethrough, background });
             
@@ -7413,12 +7456,15 @@
                 
                 row.prices.forEach((price, index) => {
                     const cellClass = index === 0 ? 'celda-precio-primera' : 'celda-servicio-orbita';
-                    const soldOutClass = price.soldOut ? ' cell-sold-out' : '';
-                    // Usar el texto real de la celda
-                    const displayText = price.value;
                     
-                    rowsDesktopHTML += `
-            <div class="celda-dato-orbita ${cellClass}${soldOutClass}"><span>${displayText}</span></div>`;
+                    // Si está agotado, aplicar estilo directo en negro y bold
+                    if (price.soldOut) {
+                        rowsDesktopHTML += `
+            <div class="celda-dato-orbita ${cellClass}" style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;"><span style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;">Agotado</span></div>`;
+                    } else {
+                        rowsDesktopHTML += `
+            <div class="celda-dato-orbita ${cellClass}" style="font-weight: 700 !important; color: #121212 !important; opacity: 1 !important;"><span style="font-weight: 700 !important; color: #121212 !important; opacity: 1 !important;">${price.value}</span></div>`;
+                    }
                 });
                 
                 rowsDesktopHTML += `
@@ -7458,12 +7504,15 @@
                 
                 row.prices.forEach((price, index) => {
                     const cellClass = index > 0 ? ' celda-servicio-mobile-orbita' : '';
-                    const soldOutClass = price.soldOut ? ' cell-sold-out' : '';
-                    // Usar el texto real de la celda
-                    const displayText = price.value;
                     
-                    rowsMobileHTML += `
-              <div class="celda-precio-mobile-orbita${cellClass}${soldOutClass}"><span>${displayText}</span></div>`;
+                    // Si está agotado, aplicar estilo directo en negro y bold
+                    if (price.soldOut) {
+                        rowsMobileHTML += `
+              <div class="celda-precio-mobile-orbita${cellClass}" style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;"><span style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;">Agotado</span></div>`;
+                    } else {
+                        rowsMobileHTML += `
+              <div class="celda-precio-mobile-orbita${cellClass}" style="font-weight: 700 !important; color: #121212 !important; opacity: 1 !important;"><span style="font-weight: 700 !important; color: #121212 !important; opacity: 1 !important;">${price.value}</span></div>`;
+                    }
                 });
                 
                 rowsMobileHTML += `
@@ -8338,7 +8387,7 @@ ${generateSoldOutCSS()}`;
         function generateSoldOutCSS() {
             // Obtener configuración actual
             const soldOutText = document.getElementById('soldOutText').value || 'Agotado';
-            const soldOutColor = document.getElementById('soldOutColor').value || '#ef4444';
+            const soldOutColor = '#000000'; // Color negro fijo
             const strikethrough = document.getElementById('soldOutStrikethrough').checked;
             const background = document.getElementById('soldOutBackground').checked;
             
@@ -8348,21 +8397,21 @@ ${generateSoldOutCSS()}`;
             let soldOutCSS = `
 /* Sold Out Styles - Generated from Configuration */
 .cell-sold-out {
-    font-weight: bold !important;
+    font-weight: normal !important;
 }
 
 /* Desktop sold out styles */
 .cell-sold-out span,
 .cell-sold-out {
     color: ${soldOutColor} !important;
-    font-weight: bold !important;
+    font-weight: normal !important;
 }
 
 /* Mobile sold out styles - selectores específicos */
 .celda-precio-mobile-orbita.cell-sold-out span,
 .celda-precio-mobile-orbita.cell-sold-out {
     color: ${soldOutColor} !important;
-    font-weight: bold !important;
+    font-weight: normal !important;
 }`;
 
             // Agregar strikethrough si está habilitado
@@ -8436,7 +8485,13 @@ ${generateSoldOutCSS()}`;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabla de Precios - My Chemical Romance</title>
     <style>
-    /* Estilos para estado Agotado */        ${soldOutConfig.enabled ? generateSoldOutStyles() : ''}
+    /* Estilos básicos */
+    .celda-dato-orbita,
+    .celda-precio-mobile-orbita {
+        font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    
+    /* Estilos para estado Agotado - Sin estilos específicos para el preview */
 
     /* CSS Reset básico */
     .tabla-orbita-container * {
