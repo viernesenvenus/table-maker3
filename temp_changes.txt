@@ -1,0 +1,62 @@
+function getCurrentSoldOutConfig() {
+    return {
+        enabled: document.getElementById("soldOutSelected")?.checked || false,
+        color: document.getElementById("soldOutColor")?.value || "#ef4444",
+        text: document.getElementById("soldOutText")?.value || "Agotado",
+        strikethrough: document.getElementById("soldOutStrikethrough")?.checked || false,
+        background: document.getElementById("soldOutBackground")?.checked || false
+    };
+}
+
+function generateSoldOutStyles() {
+    const config = getCurrentSoldOutConfig();
+    return `
+    /* Estilos para estado Agotado */
+    .cell-sold-out,
+    .cell-sold-out span,
+    .celda-precio-mobile-orbita.cell-sold-out,
+    .celda-precio-mobile-orbita.cell-sold-out span {
+        color: ${config.color} !important;
+        font-weight: bold !important;
+        text-decoration: none !important;
+        ${config.strikethrough ? "text-decoration: line-through !important;" : ""}
+    }
+
+    /* Background para estado Agotado */
+    .cell-sold-out,
+    .celda-precio-mobile-orbita.cell-sold-out {
+        ${config.background ? `background-color: ${config.color}1A !important;` : ""}
+    }`;
+}
+
+function generateAndShowCode() {
+    console.log("Generando código...");
+    const tableData = getCurrentTableData();
+    console.log("Datos de tabla obtenidos:", tableData);
+    const html = generateExportHTML(tableData);
+    const css = generateExportCSS();
+    const soldOutConfig = getCurrentSoldOutConfig();
+    
+    // Generar código completo
+    generatedCode = `<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla de Precios - Exportada</title>
+    <style>
+        /* Estilos base */
+        ${css}
+        
+        /* Estilos para estado Agotado */
+        ${soldOutConfig.enabled ? generateSoldOutStyles() : "/* Estado Agotado desactivado */"}
+    </style>
+</head>
+<body>
+    ${html}
+</body>
+</html>`;
+
+    // Mostrar en el modal
+    document.getElementById("codeDisplay").textContent = generatedCode;
+}
