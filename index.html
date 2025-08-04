@@ -418,7 +418,7 @@
         .preview-section {
             flex: 1;
             background: hsl(var(--background));
-            padding: 24px;
+            padding: 12px;
            
             overflow: auto;
             position: relative;
@@ -2158,6 +2158,59 @@
                 flex-direction: column !important;
                 justify-content: flex-start !important;
             }
+
+            /* Estilos para cuando el venue está oculto */
+            .tabla-orbita-container.hide-venue .desktop-contenido-orbita {
+                display: flex !important;
+                justify-content: center !important;
+                gap: 0 !important;
+                padding: 0 !important;
+            }
+
+            .tabla-orbita-container.hide-venue .seccion-precios-orbita {
+                flex: none !important;
+                width: 100% !important;
+                max-width: 600px !important;
+                margin: 0 auto !important;
+            }
+
+            .tabla-orbita-container.hide-venue .seccion-mapa-orbita {
+                display: none !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                width: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+                position: absolute !important;
+                pointer-events: none !important;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .tabla-orbita-container.hide-venue .seccion-mapa-mobile-orbita {
+                display: none !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                width: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+                position: absolute !important;
+                pointer-events: none !important;
+            }
+
+            .tabla-orbita-container.hide-venue .seccion-precios-mobile-orbita {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding-top: 0 !important;
+            }
+
+            .tabla-orbita-container.hide-venue .contenido-mobile-orbita {
+                padding-top: 0 !important;
+            }
         }
 
         .tabla-orbita-container .seccion-precios-orbita {
@@ -2245,7 +2298,8 @@
 
         /* Indicador de color inline */
         .indicador-color-orbita {
-            vertical-align: middle;
+            vertical-align: top !important;
+            margin-top: 2px !important;
         }
 
         /* Columnas de precios - Anchos compactos optimizados */
@@ -2608,6 +2662,8 @@
         /* Header de sectores mobile */
         .tabla-orbita-container .header-sectores-mobile-orbita {
             width: 140px !important;
+            min-width: 140px !important;
+            max-width: 140px !important;
             background: transparent !important;
             border-bottom: 1.7px solid #024DDF !important;
             text-align: left !important;
@@ -2685,7 +2741,7 @@
         /* Sectores individuales mobile */
         .tabla-orbita-container .item-sector-mobile-orbita {
             display: flex !important;
-            align-items: center !important;
+            align-items: flex-start !important;
             justify-content: flex-start !important;
             gap: 6px !important;
             padding: 8px 8px !important;
@@ -2693,6 +2749,8 @@
             min-height: 32px !important;
             background: transparent !important;
             width: 140px !important;
+            min-width: 140px !important;
+            max-width: 140px !important;
             box-sizing: border-box !important;
             flex-shrink: 0 !important;
             margin: 0 !important;
@@ -2709,15 +2767,16 @@
             height: 10px !important;
             border-radius: 1px !important;
             flex-shrink: 0 !important;
-            margin: 0 !important;
+            margin: 2px 4px 0 0 !important;
             padding: 0 !important;
+            align-self: flex-start !important;
         }
 
         .tabla-orbita-container .item-sector-mobile-orbita span {
             font-family: 'Averta', sans-serif !important;
             font-weight: 700 !important;
             font-size: 12px !important;
-            line-height: 10px !important;
+            line-height: 12px !important;
             letter-spacing: 0.09px !important;
             color: #121212 !important;
             opacity: 0.9 !important;
@@ -3719,6 +3778,13 @@
                                     </div>
                                     <div class="help-text">📷 Enter URL of venue image</div>
                                 </div>
+                                <div class="toggle-group">
+                                    <span class="toggle-label">Sin venue</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="hideVenue" onchange="toggleVenue(this.checked)">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
@@ -3741,9 +3807,9 @@
                                 </label>
                             </div>
 
-                            <div class="toggle-group">
-                                <span class="toggle-label">Strike Through Line</span>
-                                <label class="toggle-switch">
+                                <div class="toggle-group">
+                                    <span class="toggle-label">Strike Through Line</span>
+                                    <label class="toggle-switch">
                                     <input type="checkbox" id="soldOutStrikethrough" onchange="updateSoldOutStyles()">
                                     <span class="toggle-slider"></span>
                                 </label>
@@ -3753,9 +3819,9 @@
                                 <span class="toggle-label">Disable All Sold Out</span>
                                 <label class="toggle-switch">
                                     <input type="checkbox" id="disableAllSoldOut" onchange="handleDisableAllSoldOut(this.checked)">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                        </div>
                                 <div class="toggle-group">
                                     <span class="toggle-label">Transparent Background</span>
                                     <label class="toggle-switch">
@@ -5989,6 +6055,73 @@
             }
         }
 
+        function toggleVenue(hide) {
+            const containers = document.querySelectorAll('.tabla-orbita-container');
+            const mapSections = document.querySelectorAll('.seccion-mapa-orbita, .seccion-mapa-mobile-orbita');
+            
+            containers.forEach(container => {
+                if (hide) {
+                    container.classList.add('hide-venue');
+                    // Ajustar el contenedor principal para centrar la tabla
+                    const desktopContent = container.querySelector('.desktop-contenido-orbita');
+                    if (desktopContent) {
+                        desktopContent.style.justifyContent = 'center';
+                        desktopContent.style.gap = '0';
+                    }
+                    // Ajustar la sección de precios para ocupar el espacio correctamente
+                    const pricesSection = container.querySelector('.seccion-precios-orbita');
+                    if (pricesSection) {
+                        pricesSection.style.flex = 'none';
+                        pricesSection.style.width = '100%';
+                        pricesSection.style.maxWidth = '600px';
+                        pricesSection.style.margin = '0 auto';
+                    }
+                } else {
+                    container.classList.remove('hide-venue');
+                    // Restaurar estilos originales
+                    const desktopContent = container.querySelector('.desktop-contenido-orbita');
+                    if (desktopContent) {
+                        desktopContent.style.justifyContent = '';
+                        desktopContent.style.gap = '';
+                    }
+                    const pricesSection = container.querySelector('.seccion-precios-orbita');
+                    if (pricesSection) {
+                        pricesSection.style.flex = '';
+                        pricesSection.style.width = '';
+                        pricesSection.style.maxWidth = '';
+                        pricesSection.style.margin = '';
+                    }
+                }
+            });
+
+            // Ocultar/mostrar las secciones del mapa directamente
+            mapSections.forEach(section => {
+                if (hide) {
+                    section.style.display = 'none';
+                    section.style.visibility = 'hidden';
+                    section.style.height = '0';
+                    section.style.width = '0';
+                    section.style.margin = '0';
+                    section.style.padding = '0';
+                    section.style.overflow = 'hidden';
+                } else {
+                    section.style.display = '';
+                    section.style.visibility = '';
+                    section.style.height = '';
+                    section.style.width = '';
+                    section.style.margin = '';
+                    section.style.padding = '';
+                    section.style.overflow = '';
+                }
+            });
+            
+            // Actualizar el código exportado
+            const mostrarCodigoBtn = document.querySelector('.btn-mostrar-codigo');
+            if (mostrarCodigoBtn) {
+                mostrarCodigoBtn.click();
+            }
+        }
+
         function updateTitleText() {
             const titleText = document.getElementById('titleTextInput').value.trim();
             const titleElements = document.querySelectorAll('.titulo-seccion-orbita, .titulo-seccion-mobile-orbita');
@@ -6386,15 +6519,15 @@
             
             console.log('Toggle sold out mode called for cell:', cell, 'enabled:', enabled);
             
-            const span = cell.querySelector('span');
-            const targetElement = span || cell;
-            
+                const span = cell.querySelector('span');
+                const targetElement = span || cell;
+                
             if (enabled) {
                 // Guardar precio original si aún no se ha guardado
-                if (!cell.hasAttribute('data-original-price')) {
-                    cell.setAttribute('data-original-price', targetElement.textContent);
-                }
-                
+                    if (!cell.hasAttribute('data-original-price')) {
+                        cell.setAttribute('data-original-price', targetElement.textContent);
+                    }
+                    
                 // Aplicar texto "Agotado" en negro y bold
                 targetElement.textContent = 'Agotado';
                 
@@ -6410,13 +6543,13 @@
                 cell.style.setProperty('opacity', '1', 'important');
                 
                 // Agregar clase para identificar el estado
-                cell.classList.add('cell-sold-out');
-            } else {
+                    cell.classList.add('cell-sold-out');
+                } else {
                 // Solo restaurar si la celda está en estado "Agotado"
                 if (cell.classList.contains('cell-sold-out')) {
                     const originalPrice = cell.getAttribute('data-original-price');
                     if (originalPrice) {
-                        // Restaurar precio original
+                    // Restaurar precio original
                         targetElement.textContent = originalPrice;
                         
                         // Restaurar estilos originales
@@ -6442,11 +6575,11 @@
         function restoreCellFromSoldOut(cell) {
             const span = cell.querySelector('span');
             const targetElement = span || cell;
-            const originalPrice = cell.getAttribute('data-original-price');
+                    const originalPrice = cell.getAttribute('data-original-price');
             
-            if (originalPrice) {
+                    if (originalPrice) {
                 // Restaurar precio original
-                targetElement.textContent = originalPrice;
+                        targetElement.textContent = originalPrice;
                 
                 // Restaurar estilos originales con !important para asegurar que se apliquen
                 targetElement.style.setProperty('font-weight', '700', 'important');
@@ -6468,7 +6601,7 @@
             }
             
             // Remover todas las clases relacionadas con el estado "Agotado"
-            cell.classList.remove('cell-sold-out');
+                    cell.classList.remove('cell-sold-out');
             cell.classList.remove('force-strikethrough');
             cell.classList.remove('force-no-strikethrough');
         }
@@ -6546,7 +6679,7 @@
             
             // Aplicar todos los cambios inmediatamente
             forceUpdateAllSoldOutCells();
-            forceSyncAllCorrespondingCells();
+                forceSyncAllCorrespondingCells();
             updateExportedCode();
         }
         
@@ -7422,6 +7555,10 @@
 
         // Generar HTML para exportación (estructura EXACTA de tabla.html)
         function generateExportHTML(tableData) {
+            // Verificar si el venue está oculto
+            const hideVenue = document.getElementById('hideVenue')?.checked;
+            const venueClass = hideVenue ? ' hide-venue' : '';
+
             // Generar headers de la tabla desktop - estructura EXACTA de tabla.html
             let headersDesktopHTML = `
           <!-- Fila de headers -->
@@ -7450,7 +7587,7 @@
                 rowsDesktopHTML += `
           <div class="fila-datos-orbita">
             <div class="celda-dato-orbita celda-sector-orbita">
-              <div class="indicador-color-orbita" style="width: 16px; height: 16px; border-radius: 2px; background: ${row.sectorColor}; display: inline-block; margin-right: 7px; vertical-align: middle;"></div>
+              <div class="indicador-color-orbita" style="width: 16px; height: 16px; border-radius: 2px; background: ${row.sectorColor}; display: inline-block; margin-right: 7px; vertical-align: top !important; margin-top: 2px !important;"></div>
               <span>${row.sector}</span>
             </div>`;
                 
@@ -7459,7 +7596,7 @@
                     
                     // Si está agotado, aplicar estilo directo en negro y bold
                     if (price.soldOut) {
-                        rowsDesktopHTML += `
+                    rowsDesktopHTML += `
             <div class="celda-dato-orbita ${cellClass}" style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;"><span style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;">Agotado</span></div>`;
                     } else {
                         rowsDesktopHTML += `
@@ -7497,7 +7634,7 @@
                 rowsMobileHTML += `
           <div class="fila-datos-mobile-orbita">
             <div class="item-sector-mobile-orbita">
-              <div class="color-sector-mobile-orbita" style="background: ${row.sectorColor};"></div>
+              <div class="color-sector-mobile-orbita" style="background: ${row.sectorColor}; vertical-align: top !important; margin-top: 2px !important;"></div>
               <span>${row.sector}</span>
             </div>
             <div class="fila-precios-mobile-orbita">`;
@@ -7507,7 +7644,7 @@
                     
                     // Si está agotado, aplicar estilo directo en negro y bold
                     if (price.soldOut) {
-                        rowsMobileHTML += `
+                    rowsMobileHTML += `
               <div class="celda-precio-mobile-orbita${cellClass}" style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;"><span style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;">Agotado</span></div>`;
                     } else {
                         rowsMobileHTML += `
@@ -7521,7 +7658,7 @@
             });
 
             // Estructura COMPLETA siguiendo tabla.html EXACTAMENTE
-            return `<div class="tabla-orbita-container">
+            return `<div class="tabla-orbita-container${venueClass}">
   <!-- VERSIÓN DESKTOP -->
   <div class="version-desktop-orbita">
     ${tableData.settings.showEventInfo ? `<!-- Header del evento -->
@@ -8295,7 +8432,7 @@
     font-family: 'Averta', sans-serif !important;
     font-weight: 700 !important;
     font-size: 12px !important;
-    line-height: 10px !important;
+    line-height: 12px !important;
     letter-spacing: 0.09px !important;
     color: #121212 !important;
     opacity: 0.9 !important;
@@ -8467,6 +8604,32 @@ ${generateSoldOutCSS()}`;
             return soldOutCSS;
         }
 
+        // Función para verificar si hay 5 columnas activas
+        function hasFiveActiveColumns(tableData) {
+            // Una columna es para sectores + 4 columnas de precios
+            return tableData.headers.length === 5;
+        }
+
+        function generateMobileColumnStyles(tableData) {
+            if (!hasFiveActiveColumns(tableData)) return '';
+            
+            return `
+            /* Ajustes para 5 columnas en mobile */
+            @media (max-width: 768px) {
+                .tabla-orbita-container .header-sectores-mobile-orbita {
+                    width: 110px !important;
+                    min-width: 110px !important;
+                    max-width: 110px !important;
+                }
+                
+                .tabla-orbita-container .item-sector-mobile-orbita {
+                    width: 110px !important;
+                    min-width: 110px !important;
+                    max-width: 110px !important;
+                }
+            }`;
+        }
+
         // Generar y mostrar código (igual que tabla.html)
         function generateAndShowCode() {
             console.log('Generando código...');
@@ -8499,6 +8662,88 @@ ${generateSoldOutCSS()}`;
       padding: 0;
       box-sizing: border-box;
       font-family: 'Averta', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    /* Indicador de color */
+    .indicador-color-orbita {
+      vertical-align: top !important;
+      margin-top: 2px !important;
+    }
+
+    ${generateMobileColumnStyles(tableData)}
+
+    ${hasFiveActiveColumns(tableData) ? `
+    /* Estilos especiales para 5 columnas en mobile */
+    @media (max-width: 768px) {
+        .tabla-orbita-container .header-sectores-mobile-orbita {
+            width: 110px !important;
+            min-width: 110px !important;
+            max-width: 110px !important;
+        }
+        
+        .tabla-orbita-container .item-sector-mobile-orbita {
+            width: 110px !important;
+            min-width: 110px !important;
+            max-width: 110px !important;
+        }
+        
+        .tabla-orbita-container .columna-sectores-orbita {
+            width: 110px !important;
+            min-width: 110px !important;
+            max-width: 110px !important;
+        }
+    }` : ''}
+
+    /* Estilos para cuando el venue está oculto */
+    .tabla-orbita-container.hide-venue .desktop-contenido-orbita {
+        display: flex !important;
+        justify-content: center !important;
+        gap: 0 !important;
+        padding: 0 !important;
+    }
+
+    .tabla-orbita-container.hide-venue .seccion-precios-orbita {
+        flex: none !important;
+        width: 100% !important;
+        max-width: 600px !important;
+        margin: 0 auto !important;
+    }
+
+    .tabla-orbita-container.hide-venue .seccion-mapa-orbita {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        pointer-events: none !important;
+    }
+
+    @media (max-width: 768px) {
+        .tabla-orbita-container.hide-venue .seccion-mapa-mobile-orbita {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            width: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            position: absolute !important;
+            pointer-events: none !important;
+        }
+
+        .tabla-orbita-container.hide-venue .seccion-precios-mobile-orbita {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding-top: 0 !important;
+        }
+
+        .tabla-orbita-container.hide-venue .contenido-mobile-orbita {
+            padding-top: 0 !important;
+        }
     }
     
     .tabla-orbita-container {
