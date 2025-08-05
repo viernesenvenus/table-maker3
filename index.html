@@ -3716,7 +3716,7 @@
                     </button>
             </div>
             <div class="header-buttons">
-                <button class="import-code-btn" id="importCodeBtn" onclick="mostrarModalImportar()">📥 Importar Código</button>
+                <button class="import-code-btn" id="importCodeBtn" onclick="mostrarModalImportar()" style="display: none !important;">📥 Importar Código</button>
                 <button class="show-code-btn" id="showCodeBtn" onclick="mostrarCodigoDirecto()">📋 Mostrar Código</button>
             </div>
         </div>
@@ -3945,7 +3945,6 @@
                 
                 <div class="panel-tabs">
                     <div class="panel-tab active" onclick="switchTab('content', this)">Content</div>
-                    <div class="panel-tab" onclick="switchTab('design', this)">Design</div>
                     <div class="panel-tab" onclick="switchTab('advanced', this)">Advanced</div>
                 </div>
                 
@@ -4106,14 +4105,6 @@
                                 </label>
                             </div>
 
-                                <div class="toggle-group">
-                                    <span class="toggle-label">Strike Through Line</span>
-                                    <label class="toggle-switch">
-                                    <input type="checkbox" id="soldOutStrikethrough" onchange="updateSoldOutStyles()">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-
                             <div class="toggle-group">
                                 <span class="toggle-label">Disable All Sold Out</span>
                                 <label class="toggle-switch">
@@ -4121,49 +4112,11 @@
                                         <span class="toggle-slider"></span>
                                     </label>
                                         </div>
-                                <div class="toggle-group">
-                                    <span class="toggle-label">Transparent Background</span>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="soldOutBackground" onchange="updateSoldOutStyles()">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                    <!-- TAB DESIGN -->
-                    <div id="designTab" class="tab-content">
-                        <!-- Special States -->
-                        <div class="section">
-                            <div class="section-header" onclick="toggleSection(this)">
-                                <div class="section-title">Special States</div>
-                                <div class="section-toggle">▼</div>
-                            </div>
-                            <div class="section-content">
-
-                            </div>
-                        </div>
-
-                        <!-- Cell Spacing -->
-                        <div class="section">
-                            <div class="section-header" onclick="toggleSection(this)">
-                                <div class="section-title">Cell Spacing</div>
-                                <div class="section-toggle">▼</div>
-                            </div>
-                            <div class="section-content">
-                                <div class="control-group">
-                                    <label class="control-label">Cell Padding</label>
-                                    <input type="range" class="control-range" id="cellPadding" min="2" max="24" value="2" onchange="updateCellPadding()">
-                                    <span class="range-value" id="cellPaddingValue">2px</span>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-
-                    </div>
+                    <!-- TAB DESIGN REMOVED -->
 
                     <!-- TAB ADVANCED -->
                     <div id="advancedTab" class="tab-content">
