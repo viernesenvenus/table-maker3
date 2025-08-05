@@ -1500,6 +1500,233 @@
             margin-bottom: 8px;
         }
 
+        /* Controles del preview */
+        .preview-controls {
+            position: absolute !important;
+            top: 16px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            z-index: 1000 !important;
+            padding: 4px 8px !important;
+            background-color: rgba(245, 245, 245, 0.9) !important;
+            border-radius: 4px !important;
+            border: 1px solid #ddd !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .preview-controls .control-group {
+            margin: 0 !important;
+        }
+
+        .preview-controls .control-label {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            font-size: 14px !important;
+            color: #333 !important;
+            cursor: pointer !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            white-space: nowrap !important;
+        }
+
+        .preview-controls input[type="checkbox"] {
+            margin: 0 !important;
+            cursor: pointer !important;
+        }
+
+        /* Asegurar que el contenedor de la tabla mantenga su posición */
+        .preview-section {
+            position: relative !important;
+        }
+
+        .table-container {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+        }
+
+        /* Botones de eliminación en preview */
+        .preview-delete-button {
+            position: absolute !important;
+            background: transparent !important;
+            border: none !important;
+            cursor: pointer !important;
+            padding: 4px !important;
+            display: none !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 24px !important;
+            height: 24px !important;
+            border-radius: 4px !important;
+            transition: background-color 0.2s ease !important;
+            z-index: 1000 !important;
+            margin: 0 !important;
+            pointer-events: auto !important;
+        }
+
+        .preview-delete-button:hover {
+            background-color: rgba(255, 0, 0, 0.1) !important;
+        }
+
+        .preview-delete-button svg {
+            width: 16px !important;
+            height: 16px !important;
+            fill: #ff0000 !important;
+        }
+
+        .preview-delete-column {
+            top: -28px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .preview-delete-row {
+            left: -28px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Contenedor para mantener el espaciado */
+        .preview-mode .tabla-orbita-container {
+            width: 100% !important;
+            max-width: none !important;
+            padding: 32px !important;
+            box-sizing: border-box !important;
+        }
+
+        #previewSection.preview-mode .preview-delete-button {
+            display: flex !important;
+        }
+
+        /* No mostrar botón de eliminar en la primera fila (headers) */
+        .fila-headers-orbita .preview-delete-button,
+        .headers-row-mobile-orbita .preview-delete-button {
+            display: none !important;
+        }
+
+        /* Ajustes para mantener el espaciado correcto */
+        .columna-precio-orbita,
+        .fila-datos-orbita {
+            position: relative !important;
+            margin: 0 !important;
+            padding: 8px 16px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        .preview-mode .tabla-wrapper-orbita {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: none !important;
+        }
+
+        .preview-mode .desktop-contenido-orbita {
+            margin: 0 !important;
+            padding: 24px !important;
+            gap: 24px !important;
+            width: 100% !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: flex-start !important;
+        }
+
+        .preview-mode .seccion-precios-orbita {
+            flex: 1 !important;
+            width: 100% !important;
+            max-width: none !important;
+        }
+
+        .preview-mode .seccion-mapa-orbita {
+            flex: 1 !important;
+            width: 100% !important;
+            max-width: none !important;
+        }
+
+        /* Mantener el ancho de las columnas */
+        .columna-sectores-orbita,
+        .columna-precio-orbita {
+            width: 0 !important; /* Permite que flex-grow funcione correctamente */
+            flex: 1 1 0 !important; /* flex-grow: 1, flex-shrink: 1, flex-basis: 0 */
+            min-width: 0 !important; /* Permite que las columnas se reduzcan si es necesario */
+            max-width: none !important;
+        }
+
+        /* Asegurar que la columna de sectores no sea más ancha que las demás */
+        .columna-sectores-orbita {
+            flex: 1 1 0 !important;
+            width: 0 !important;
+            min-width: 0 !important;
+            max-width: none !important;
+        }
+
+        /* Contenedor de la tabla para distribución equitativa */
+        .tabla-wrapper-orbita {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: stretch !important;
+        }
+
+        /* Asegurar que los headers también mantengan el mismo ancho */
+        .header-sectores-orbita,
+        .header-precio-orbita {
+            width: 100% !important;
+            flex: 1 1 0 !important;
+            min-width: 0 !important;
+            max-width: none !important;
+            white-space: normal !important; /* Permite que el texto se ajuste */
+            overflow-wrap: break-word !important;
+            word-wrap: break-word !important;
+        }
+
+        .header-sectores-orbita,
+        .header-precio-orbita,
+        .header-servicio-orbita {
+            padding: 8px 16px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Asegurar que las celdas mantengan su tamaño */
+        .celda-dato-orbita {
+            padding: 8px 16px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            flex: 1 1 0 !important;
+            min-width: 0 !important;
+            max-width: none !important;
+        }
+
+        /* Ajustes para móvil */
+        @media (max-width: 768px) {
+            .header-sectores-mobile-orbita,
+            .header-precio-mobile-orbita {
+                flex: 1 1 0 !important;
+                width: 0 !important;
+                min-width: 0 !important;
+                max-width: none !important;
+            }
+
+            .item-sector-mobile-orbita,
+            .item-precio-mobile-orbita {
+                flex: 1 1 0 !important;
+                width: 0 !important;
+                min-width: 0 !important;
+                max-width: none !important;
+            }
+
+            .fila-headers-mobile-orbita,
+            .fila-datos-mobile-orbita {
+                display: flex !important;
+                justify-content: stretch !important;
+                width: 100% !important;
+            }
+        }
+
         /* Device-specific styles */
         .preview-section.desktop-view {
             max-width: none;
@@ -2150,6 +2377,70 @@
 
             .tabla-orbita-container .desktop-contenido-orbita {
                 min-height: 100% !important;
+            }
+
+            /* Botones de eliminación en preview */
+            .preview-delete-buttons {
+                display: none !important;
+            }
+
+            .preview-mode .preview-delete-buttons {
+                display: flex !important;
+            }
+
+            .preview-delete-column {
+                position: absolute !important;
+                top: -30px !important;
+                transform: translateX(-50%) !important;
+                background: transparent !important;
+                border: none !important;
+                cursor: pointer !important;
+                padding: 4px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 24px !important;
+                height: 24px !important;
+                border-radius: 4px !important;
+                transition: background-color 0.2s ease !important;
+            }
+
+            .preview-delete-column:hover {
+                background-color: rgba(255, 0, 0, 0.1) !important;
+            }
+
+            .preview-delete-column svg {
+                width: 16px !important;
+                height: 16px !important;
+                fill: #ff0000 !important;
+            }
+
+            .preview-delete-row {
+                position: absolute !important;
+                left: -30px !important;
+                top: 50% !important;
+                transform: translateY(-50%) !important;
+                background: transparent !important;
+                border: none !important;
+                cursor: pointer !important;
+                padding: 4px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 24px !important;
+                height: 24px !important;
+                border-radius: 4px !important;
+                transition: background-color 0.2s ease !important;
+            }
+
+            .preview-delete-row:hover {
+                background-color: rgba(255, 0, 0, 0.1) !important;
+            }
+
+            .preview-delete-row svg {
+                width: 16px !important;
+                height: 16px !important;
+                fill: #ff0000 !important;
             }
 
             .tabla-orbita-container .seccion-precios-orbita,
@@ -3434,6 +3725,14 @@
     <div class="main-layout">
         <div class="preview-container">
             <div class="preview-section" id="previewSection">
+                <div class="preview-controls">
+                    <div class="control-group">
+                        <label class="control-label">
+                            <input type="checkbox" id="previewModeToggle" onchange="togglePreviewMode(this.checked)">
+                            Modo edición
+                        </label>
+                    </div>
+                </div>
                 <div class="table-container" id="tableContainer">
                     <div class="version-desktop-orbita" id="desktopVersion">
                         <div class="evento-header-orbita">
@@ -4437,6 +4736,58 @@
                 const content = tableContainer.innerHTML;
                 tableContainer.innerHTML = `<div class="tabla-orbita-container">${content}</div>`;
             }
+
+            // Agregar botones de eliminación
+            addDeleteButtons();
+        }
+
+        function addDeleteButtons() {
+            // Remover botones existentes
+            document.querySelectorAll('.preview-delete-button').forEach(btn => btn.remove());
+
+            // Agregar botones de eliminar columnas
+            const headerColumns = document.querySelectorAll('.columna-precio-orbita');
+            headerColumns.forEach((column, index) => {
+                const button = document.createElement('button');
+                button.className = 'preview-delete-button preview-delete-column';
+                button.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
+                button.onclick = () => removeColumn(index);
+                column.style.position = 'relative';
+                column.appendChild(button);
+            });
+
+            // Agregar botones de eliminar filas
+            const dataRows = document.querySelectorAll('.fila-datos-orbita');
+            dataRows.forEach((row, index) => {
+                const button = document.createElement('button');
+                button.className = 'preview-delete-button preview-delete-row';
+                button.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
+                button.onclick = () => removeRow(index);
+                row.style.position = 'relative';
+                row.appendChild(button);
+            });
+
+            // Agregar botones de eliminar columnas en mobile
+            const headerColumnsMobile = document.querySelectorAll('.header-precio-mobile-orbita');
+            headerColumnsMobile.forEach((column, index) => {
+                const button = document.createElement('button');
+                button.className = 'preview-delete-button preview-delete-column';
+                button.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
+                button.onclick = () => removeColumn(index);
+                column.style.position = 'relative';
+                column.appendChild(button);
+            });
+
+            // Agregar botones de eliminar filas en mobile
+            const dataRowsMobile = document.querySelectorAll('.fila-datos-mobile-orbita');
+            dataRowsMobile.forEach((row, index) => {
+                const button = document.createElement('button');
+                button.className = 'preview-delete-button preview-delete-row';
+                button.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
+                button.onclick = () => removeRow(index);
+                row.style.position = 'relative';
+                row.appendChild(button);
+            });
         }
 
         function initializeSliders() {
@@ -4516,6 +4867,30 @@
                 console.error('❌ No se encontró mobileBtn');
             }
         }
+
+        function togglePreviewMode(enabled) {
+            const previewSection = document.getElementById('previewSection');
+            if (enabled) {
+                previewSection.classList.add('preview-mode');
+                addDeleteButtons();
+            } else {
+                previewSection.classList.remove('preview-mode');
+                document.querySelectorAll('.preview-delete-button').forEach(btn => btn.remove());
+            }
+
+            // Actualizar el estado del toggle en el localStorage
+            localStorage.setItem('previewMode', enabled ? 'true' : 'false');
+        }
+
+        // Restaurar el estado del modo preview al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            const previewMode = localStorage.getItem('previewMode') === 'true';
+            const previewModeToggle = document.getElementById('previewModeToggle');
+            if (previewModeToggle) {
+                previewModeToggle.checked = previewMode;
+                togglePreviewMode(previewMode);
+            }
+        });
 
         function updatePreviewForDevice(device) {
             const previewSection = document.getElementById('previewSection');
@@ -4864,6 +5239,12 @@
             
             // Reinicializar eventos
             initializeTable();
+
+            // Actualizar botones de eliminación si el modo preview está activo
+            const previewModeToggle = document.getElementById('previewModeToggle');
+            if (previewModeToggle && previewModeToggle.checked) {
+                addDeleteButtons();
+            }
         }
 
         function addColumn() {
@@ -4916,24 +5297,41 @@
             if (currentDevice === 'tablet') {
                 checkTabletColumnsAndLayout();
             }
+
+            // Actualizar botones de eliminación si el modo preview está activo
+            const previewModeToggle = document.getElementById('previewModeToggle');
+            if (previewModeToggle && previewModeToggle.checked) {
+                addDeleteButtons();
+            }
         }
 
-        function removeRow() {
+        function removeRow(rowIndex) {
             const dataRows = document.querySelectorAll('.fila-datos-orbita');
             const dataMobileRows = document.querySelectorAll('.fila-datos-mobile-orbita');
             
             if (dataRows.length > 1) {
-                if (confirm('Are you sure you want to remove the last row?')) {
+                if (confirm('Are you sure you want to remove this row?')) {
                     saveToUndo();
                     
-                    // Remover última fila desktop
-                    if (dataRows.length > 0) {
-                        dataRows[dataRows.length - 1].remove();
+                    // Si no se especifica índice, eliminar la última fila
+                    if (typeof rowIndex === 'undefined') {
+                        rowIndex = dataRows.length - 1;
                     }
                     
-                    // Remover última fila mobile
-                    if (dataMobileRows.length > 0) {
-                        dataMobileRows[dataMobileRows.length - 1].remove();
+                    // Remover fila desktop
+                    if (dataRows.length > rowIndex) {
+                        dataRows[rowIndex].remove();
+                    }
+                    
+                    // Remover fila mobile
+                    if (dataMobileRows.length > rowIndex) {
+                        dataMobileRows[rowIndex].remove();
+                    }
+
+                    // Actualizar botones de eliminación si el modo preview está activo
+                    const previewModeToggle = document.getElementById('previewModeToggle');
+                    if (previewModeToggle && previewModeToggle.checked) {
+                        addDeleteButtons();
                     }
                 }
             } else {
@@ -4941,7 +5339,7 @@
             }
         }
 
-        function removeColumn() {
+        function removeColumn(columnIndex) {
             const headerDesktop = document.querySelector('.fila-headers-orbita');
             const headerMobile = document.querySelector('.headers-precios-mobile-orbita');
             
@@ -4950,25 +5348,30 @@
             const priceColumnsMobile = headerMobile ? headerMobile.children : [];
             
             if (priceColumnsDesktop.length > 1) {
-                if (confirm('Are you sure you want to remove the last column?')) {
+                if (confirm('Are you sure you want to remove this column?')) {
                     saveToUndo();
                     
+                    // Si no se especifica índice, eliminar la última columna
+                    if (typeof columnIndex === 'undefined') {
+                        columnIndex = priceColumnsDesktop.length - 1;
+                    }
+                    
                     // Remover header desktop
-                    if (priceColumnsDesktop.length > 0) {
-                        priceColumnsDesktop[priceColumnsDesktop.length - 1].remove();
+                    if (priceColumnsDesktop.length > columnIndex) {
+                        priceColumnsDesktop[columnIndex].remove();
                     }
                     
                     // Remover header mobile
-                    if (priceColumnsMobile.length > 0) {
-                        priceColumnsMobile[priceColumnsMobile.length - 1].remove();
+                    if (priceColumnsMobile.length > columnIndex) {
+                        priceColumnsMobile[columnIndex].remove();
                     }
                     
                     // Remover celdas de todas las filas desktop
                     const dataRows = document.querySelectorAll('.fila-datos-orbita');
                     dataRows.forEach(row => {
                         const cells = row.querySelectorAll('.celda-dato-orbita:not(.celda-sector-orbita)');
-                        if (cells.length > 0) {
-                            cells[cells.length - 1].remove();
+                        if (cells.length > columnIndex) {
+                            cells[columnIndex].remove();
                         }
                     });
                     
@@ -4976,10 +5379,16 @@
                     const dataMobileRows = document.querySelectorAll('.fila-precios-mobile-orbita');
                     dataMobileRows.forEach(row => {
                         const cells = row.children;
-                        if (cells.length > 0) {
-                            cells[cells.length - 1].remove();
+                        if (cells.length > columnIndex) {
+                            cells[columnIndex].remove();
                         }
                     });
+
+                    // Actualizar botones de eliminación si el modo preview está activo
+                    const previewModeToggle = document.getElementById('previewModeToggle');
+                    if (previewModeToggle && previewModeToggle.checked) {
+                        addDeleteButtons();
+                    }
                 }
                 
                 // Verificar layout de tablet si es necesario
@@ -5249,6 +5658,12 @@
             const lastState = undoStack.pop();
             document.getElementById('tableContainer').innerHTML = lastState;
             initializeTable();
+
+            // Actualizar botones de eliminación si el modo preview está activo
+            const previewModeToggle = document.getElementById('previewModeToggle');
+            if (previewModeToggle && previewModeToggle.checked) {
+                addDeleteButtons();
+            }
         }
 
         function refreshTable() {
