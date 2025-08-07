@@ -804,6 +804,7 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 16px;
+            margin-top: 16px;
             cursor: pointer;
             user-select: none;
         }
@@ -1565,13 +1566,13 @@
         }
 
         .preview-delete-button:hover {
-            background-color: rgba(255, 0, 0, 0.1) !important;
+            background-color: rgba(0, 0, 0, 0.05) !important;
         }
 
-        .preview-delete-button svg {
+        .preview-delete-button img {
             width: 16px !important;
             height: 16px !important;
-            fill: #ff0000 !important;
+            display: block !important;
         }
 
         .preview-delete-column {
@@ -2392,7 +2393,7 @@
                 position: absolute !important;
                 top: -30px !important;
                 transform: translateX(-50%) !important;
-                background: transparent !important;
+                background: #F5F5F5 !important;
                 border: none !important;
                 cursor: pointer !important;
                 padding: 4px !important;
@@ -2420,7 +2421,7 @@
                 left: -30px !important;
                 top: 50% !important;
                 transform: translateY(-50%) !important;
-                background: transparent !important;
+                background: #F5F5F5 !important;
                 border: none !important;
                 cursor: pointer !important;
                 padding: 4px !important;
@@ -3728,7 +3729,7 @@
                 <div class="preview-controls">
                     <div class="control-group">
                         <label class="control-label">
-                            <input type="checkbox" id="previewModeToggle" onchange="togglePreviewMode(this.checked)">
+                            <input type="checkbox" id="previewModeToggle" onchange="togglePreviewMode(this.checked)" checked>
                             Modo edición
                         </label>
                     </div>
@@ -3943,10 +3944,6 @@
                     <div class="panel-subtitle">Preset: Default ▼</div>
                 </div>
                 
-                <div class="panel-tabs">
-                    <div class="panel-tab active" onclick="switchTab('content', this)">Content</div>
-                    <div class="panel-tab" onclick="switchTab('advanced', this)">Advanced</div>
-                </div>
                 
                 <div class="panel-content">
                     <!-- TAB CONTENIDO -->
@@ -4095,7 +4092,7 @@
                             <div class="section-content">
                             <div class="control-group">
                                 <label class="control-label">Sold Out Text</label>
-                                    <input type="text" class="control-input" id="soldOutText" value="Agotado" placeholder="Custom sold out text" onchange="updateSoldOutText()">
+                                    <input type="text" class="control-input" id="soldOutText" value="Agotado" placeholder="Custom sold out text" oninput="updateSoldOutText()" onchange="updateSoldOutText()">
                             </div>
                             <div class="toggle-group">
                                     <span class="toggle-label">Mark Selected Cells as Sold Out</span>
@@ -4103,59 +4100,18 @@
                                         <input type="checkbox" id="soldOutSelected" onchange="handleSoldOutToggle(this.checked)">
                                     <span class="toggle-slider"></span>
                                 </label>
-                            </div>
+                        </div>
 
-                            <div class="toggle-group">
-                                <span class="toggle-label">Disable All Sold Out</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="disableAllSoldOut" onchange="handleDisableAllSoldOut(this.checked)">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                        </div>
+
                                 </div>
                             </div>
                         </div>
 
                     <!-- TAB DESIGN REMOVED -->
 
-                    <!-- TAB ADVANCED -->
-                    <div id="advancedTab" class="tab-content">
-                        <!-- Mobile Settings -->
-                        <div class="section">
-                            <div class="section-header" onclick="toggleSection(this)">
-                                <div class="section-title">Mobile Settings</div>
-                                <div class="section-toggle">▼</div>
-                            </div>
-                            <div class="section-content">
-                                <div class="toggle-group">
-                                    <span class="toggle-label">Table Scrolling Mobile</span>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="tableScrollingMobile" onchange="toggleMobileTableScrolling()">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                                
-                                <div class="toggle-group">
-                                    <span class="toggle-label">Sticky Column Headers</span>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="stickyColumnHeaders" checked onchange="toggleStickyColumnHeaders()">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
 
-                                <div class="toggle-group">
-                                    <span class="toggle-label">Sticky Row Headers</span>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="stickyRowHeaders" checked onchange="toggleStickyRowHeaders()">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
+                    </div>
                             </div>
-                        </div>
-
-                            </div>
-                                    </div>
-                                </div>
                             </div>
 
                         </div>
@@ -4694,6 +4650,15 @@
             addDeleteButtons();
         }
 
+        // Función para crear botón de eliminar con ícono de basurero
+        function createDeleteButton(className, onClick) {
+            const button = document.createElement('button');
+            button.className = `preview-delete-button ${className}`;
+            button.innerHTML = '<img src="https://prod-assets.tmlat.com/trash_1_97f73fa94b.svg" alt="Delete" style="width: 16px; height: 16px;">';
+            button.onclick = onClick;
+            return button;
+        }
+
         function addDeleteButtons() {
             // Remover botones existentes
             document.querySelectorAll('.preview-delete-button').forEach(btn => btn.remove());
@@ -4701,10 +4666,7 @@
             // Agregar botones de eliminar columnas
             const headerColumns = document.querySelectorAll('.columna-precio-orbita');
             headerColumns.forEach((column, index) => {
-                const button = document.createElement('button');
-                button.className = 'preview-delete-button preview-delete-column';
-                button.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
-                button.onclick = () => removeColumn(index);
+                const button = createDeleteButton('preview-delete-column', () => removeColumn(index));
                 column.style.position = 'relative';
                 column.appendChild(button);
             });
@@ -4712,10 +4674,7 @@
             // Agregar botones de eliminar filas
             const dataRows = document.querySelectorAll('.fila-datos-orbita');
             dataRows.forEach((row, index) => {
-                const button = document.createElement('button');
-                button.className = 'preview-delete-button preview-delete-row';
-                button.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
-                button.onclick = () => removeRow(index);
+                const button = createDeleteButton('preview-delete-row', () => removeRow(index));
                 row.style.position = 'relative';
                 row.appendChild(button);
             });
@@ -4723,10 +4682,7 @@
             // Agregar botones de eliminar columnas en mobile
             const headerColumnsMobile = document.querySelectorAll('.header-precio-mobile-orbita');
             headerColumnsMobile.forEach((column, index) => {
-                const button = document.createElement('button');
-                button.className = 'preview-delete-button preview-delete-column';
-                button.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
-                button.onclick = () => removeColumn(index);
+                const button = createDeleteButton('preview-delete-column', () => removeColumn(index));
                 column.style.position = 'relative';
                 column.appendChild(button);
             });
@@ -4734,10 +4690,7 @@
             // Agregar botones de eliminar filas en mobile
             const dataRowsMobile = document.querySelectorAll('.fila-datos-mobile-orbita');
             dataRowsMobile.forEach((row, index) => {
-                const button = document.createElement('button');
-                button.className = 'preview-delete-button preview-delete-row';
-                button.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
-                button.onclick = () => removeRow(index);
+                const button = createDeleteButton('preview-delete-row', () => removeRow(index));
                 row.style.position = 'relative';
                 row.appendChild(button);
             });
@@ -4835,9 +4788,10 @@
             localStorage.setItem('previewMode', enabled ? 'true' : 'false');
         }
 
-        // Restaurar el estado del modo preview al cargar la página
+        // Activar el modo edición por defecto y restaurar el estado
         document.addEventListener('DOMContentLoaded', () => {
-            const previewMode = localStorage.getItem('previewMode') === 'true';
+            // Establecer el modo edición como activo por defecto si no hay estado guardado
+            const previewMode = localStorage.getItem('previewMode') !== 'false';
             const previewModeToggle = document.getElementById('previewModeToggle');
             if (previewModeToggle) {
                 previewModeToggle.checked = previewMode;
@@ -6841,8 +6795,34 @@
             const text = document.getElementById('soldOutText').value || 'Agotado';
             console.log('Updating sold out text to:', text);
             
-            // Usar la función updateSoldOutStyles que ya maneja desktop y mobile correctamente
-            updateSoldOutStyles();
+            // Actualizar todas las celdas que están en estado "Agotado"
+            const soldOutCells = document.querySelectorAll('.cell-sold-out');
+            soldOutCells.forEach(cell => {
+                const targetElement = cell.querySelector('span') || cell;
+                targetElement.textContent = text;
+                
+                // Asegurar que los estilos se mantengan
+                targetElement.style.setProperty('font-weight', '700', 'important');
+                targetElement.style.setProperty('font-style', 'normal', 'important');
+                targetElement.style.setProperty('color', '#000000', 'important');
+                targetElement.style.setProperty('opacity', '1', 'important');
+            });
+
+            // Actualizar también las celdas correspondientes en mobile
+            const mobileSoldOutCells = document.querySelectorAll('.celda-precio-mobile-orbita.cell-sold-out');
+            mobileSoldOutCells.forEach(cell => {
+                const targetElement = cell.querySelector('span') || cell;
+                targetElement.textContent = text;
+                
+                // Asegurar que los estilos se mantengan
+                targetElement.style.setProperty('font-weight', '700', 'important');
+                targetElement.style.setProperty('font-style', 'normal', 'important');
+                targetElement.style.setProperty('color', '#000000', 'important');
+                targetElement.style.setProperty('opacity', '1', 'important');
+            });
+
+            // Actualizar el código exportado
+            updateExportedCode();
             
             console.log('Sold out text updated:', text);
         }
@@ -6896,8 +6876,10 @@
                         cell.setAttribute('data-original-price', targetElement.textContent);
                     }
                     
-                // Aplicar texto "Agotado" en negro y bold
-                targetElement.textContent = 'Agotado';
+                // Aplicar texto personalizado en negro y bold
+                const soldOutText = document.getElementById('soldOutText').value || 'Agotado';
+                    targetElement.textContent = soldOutText;
+                cell.setAttribute('data-sold-out-text', soldOutText); // Guardar el texto usado
                 
                 // Aplicar estilos con !important para asegurar que se apliquen
                 targetElement.style.setProperty('font-weight', '700', 'important');
@@ -6916,6 +6898,7 @@
                 // Solo restaurar si la celda está en estado "Agotado"
                 if (cell.classList.contains('cell-sold-out')) {
                     const originalPrice = cell.getAttribute('data-original-price');
+                    cell.removeAttribute('data-sold-out-text'); // Limpiar el texto de agotado guardado
                     if (originalPrice) {
                     // Restaurar precio original
                         targetElement.textContent = originalPrice;
@@ -7023,33 +7006,7 @@
             }
         }
 
-        // Función para manejar el toggle global de todos los "Agotado"
 
-        function handleDisableAllSoldOut(disable) {
-            console.log('🔄 Global disable all sold out:', disable);
-            
-            if (disable) {
-                // Desactivar TODAS las celdas agotadas
-                const allSoldOutCells = document.querySelectorAll('.cell-sold-out');
-                console.log('Disabling all sold out cells:', allSoldOutCells.length);
-                
-                allSoldOutCells.forEach(cell => {
-                    restoreCellFromSoldOut(cell);
-                    const correspondingCell = findCorrespondingCellSimple(cell);
-                    if (correspondingCell) {
-                        restoreCellFromSoldOut(correspondingCell);
-                    }
-                });
-
-                // Desactivar el toggle de selección
-                document.getElementById('soldOutSelected').checked = false;
-            }
-            
-            // Aplicar todos los cambios inmediatamente
-            forceUpdateAllSoldOutCells();
-                forceSyncAllCorrespondingCells();
-            updateExportedCode();
-        }
         
         function forceSyncAllCorrespondingCells() {
             console.log('Force syncing ALL corresponding cells...');
@@ -7230,7 +7187,7 @@
             const targetElement = span || cell;
             
             // Usar valores fijos
-            const soldOutText = 'Agotado';
+            const soldOutText = document.getElementById('soldOutText').value || 'Agotado';
             const soldOutColor = '#000000'; // Color negro fijo
             
             console.log('Applying same styles to:', {
@@ -7923,9 +7880,10 @@
 
         // Generar HTML para exportación (estructura EXACTA de tabla.html)
         function generateExportHTML(tableData) {
-            // Verificar si el venue está oculto
+            // Obtener configuraciones
             const hideVenue = document.getElementById('hideVenue')?.checked;
             const venueClass = hideVenue ? ' hide-venue' : '';
+            const soldOutText = document.getElementById('soldOutText').value || 'Agotado';
 
             // Generar headers de la tabla desktop - estructura EXACTA de tabla.html
             let headersDesktopHTML = `
@@ -7965,7 +7923,7 @@
                     // Si está agotado, aplicar estilo directo en negro y bold
                     if (price.soldOut) {
                     rowsDesktopHTML += `
-            <div class="celda-dato-orbita ${cellClass}" style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;"><span style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;">Agotado</span></div>`;
+            <div class="celda-dato-orbita ${cellClass}" style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;"><span style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;">${soldOutText}</span></div>`;
                     } else {
                         rowsDesktopHTML += `
             <div class="celda-dato-orbita ${cellClass}" style="font-weight: 700 !important; color: #121212 !important; opacity: 1 !important;"><span style="font-weight: 700 !important; color: #121212 !important; opacity: 1 !important;">${price.value}</span></div>`;
@@ -8013,7 +7971,7 @@
                     // Si está agotado, aplicar estilo directo en negro y bold
                     if (price.soldOut) {
                     rowsMobileHTML += `
-              <div class="celda-precio-mobile-orbita${cellClass}" style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;"><span style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;">Agotado</span></div>`;
+              <div class="celda-precio-mobile-orbita${cellClass}" style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;"><span style="color: #000000 !important; font-style: normal !important; font-weight: 700 !important; opacity: 1 !important;">${soldOutText}</span></div>`;
                     } else {
                         rowsMobileHTML += `
               <div class="celda-precio-mobile-orbita${cellClass}" style="font-weight: 700 !important; color: #121212 !important; opacity: 1 !important;"><span style="font-weight: 700 !important; color: #121212 !important; opacity: 1 !important;">${price.value}</span></div>`;
