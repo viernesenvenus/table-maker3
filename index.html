@@ -2137,7 +2137,7 @@
     /* Ajustar la sección de preview */
     body.preview-only-mode .preview-section {
         width: 100% !important;
-        max-width: 1200px !important;
+        max-width: 900px !important;
         margin: 0 !important;
         padding: 20px !important;
         display: flex !important;
@@ -2149,7 +2149,7 @@
     /* Ajustar el contenido del preview */
     body.preview-only-mode .preview-content {
         width: 100% !important;
-        max-width: 1200px !important;
+        max-width: 900px !important;
         margin: 0 auto !important;
         padding: 0 !important;
         box-sizing: border-box !important;
@@ -2208,7 +2208,7 @@
 
     body.preview-only-mode .main-content > div {
         width: 100% !important;
-        max-width: 1200px !important;
+        max-width: 900px !important;
         margin: 0 auto !important;
         padding: 0 !important;
     }
@@ -2217,11 +2217,52 @@
     body.preview-only-mode * {
         margin-right: 0 !important;
     }
+    
+    /* Ocultar botones de eliminar en modo preview */
+    body.preview-only-mode .preview-delete-button,
+    body.preview-only-mode .preview-delete-column,
+    body.preview-only-mode .preview-delete-row {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+    }
+    
+    /* Mostrar botones de eliminar cuando no estamos en preview */
+    body:not(.preview-only-mode) .preview-delete-button,
+    body:not(.preview-only-mode) .preview-delete-column,
+    body:not(.preview-only-mode) .preview-delete-row {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Ocultar selectores de dispositivo en modo editor */
+    body:not(.preview-only-mode) .view-selector-group,
+    body:not(.preview-only-mode) .device-selector,
+    body:not(.preview-only-mode) [class*="view-selector"] {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+    }
 
     /* Forzar el layout correcto */
     body.preview-only-mode .preview-wrapper {
         width: 100% !important;
-        max-width: 1200px !important;
+        max-width: 900px !important;
         margin: 0 auto !important;
         padding: 0 !important;
         display: flex !important;
@@ -4889,40 +4930,47 @@
         }
 
         function addDeleteButtons() {
-            // Remover botones existentes
-            document.querySelectorAll('.preview-delete-button').forEach(btn => btn.remove());
+            // Solo agregar botones si no estamos en modo preview
+            if (!document.body.classList.contains('preview-only-mode')) {
+                // Remover botones existentes
+                document.querySelectorAll('.preview-delete-button').forEach(btn => btn.remove());
 
-            // Agregar botones de eliminar columnas
-            const headerColumns = document.querySelectorAll('.columna-precio-orbita');
-            headerColumns.forEach((column, index) => {
-                const button = createDeleteButton('preview-delete-column', () => removeColumn(index));
-                column.style.position = 'relative';
-                column.appendChild(button);
-            });
+                // Agregar botones de eliminar columnas
+                const headerColumns = document.querySelectorAll('.columna-precio-orbita');
+                headerColumns.forEach((column, index) => {
+                    const button = createDeleteButton('preview-delete-column', () => removeColumn(index));
+                    column.style.position = 'relative';
+                    column.appendChild(button);
+                    button.style.display = 'flex'; // Asegurar que el botón sea visible
+                });
 
-            // Agregar botones de eliminar filas
-            const dataRows = document.querySelectorAll('.fila-datos-orbita');
-            dataRows.forEach((row, index) => {
-                const button = createDeleteButton('preview-delete-row', () => removeRow(index));
-                row.style.position = 'relative';
-                row.appendChild(button);
-            });
+                // Agregar botones de eliminar filas
+                const dataRows = document.querySelectorAll('.fila-datos-orbita');
+                dataRows.forEach((row, index) => {
+                    const button = createDeleteButton('preview-delete-row', () => removeRow(index));
+                    row.style.position = 'relative';
+                    row.appendChild(button);
+                    button.style.display = 'flex'; // Asegurar que el botón sea visible
+                });
 
-            // Agregar botones de eliminar columnas en mobile
-            const headerColumnsMobile = document.querySelectorAll('.header-precio-mobile-orbita');
-            headerColumnsMobile.forEach((column, index) => {
-                const button = createDeleteButton('preview-delete-column', () => removeColumn(index));
-                column.style.position = 'relative';
-                column.appendChild(button);
-            });
+                // Agregar botones de eliminar columnas en mobile
+                const headerColumnsMobile = document.querySelectorAll('.header-precio-mobile-orbita');
+                headerColumnsMobile.forEach((column, index) => {
+                    const button = createDeleteButton('preview-delete-column', () => removeColumn(index));
+                    column.style.position = 'relative';
+                    column.appendChild(button);
+                    button.style.display = 'flex'; // Asegurar que el botón sea visible
+                });
 
-            // Agregar botones de eliminar filas en mobile
-            const dataRowsMobile = document.querySelectorAll('.fila-datos-mobile-orbita');
-            dataRowsMobile.forEach((row, index) => {
-                const button = createDeleteButton('preview-delete-row', () => removeRow(index));
-                row.style.position = 'relative';
-                row.appendChild(button);
-            });
+                // Agregar botones de eliminar filas en mobile
+                const dataRowsMobile = document.querySelectorAll('.fila-datos-mobile-orbita');
+                dataRowsMobile.forEach((row, index) => {
+                    const button = createDeleteButton('preview-delete-row', () => removeRow(index));
+                    row.style.position = 'relative';
+                    row.appendChild(button);
+                    button.style.display = 'flex'; // Asegurar que el botón sea visible
+                });
+            }
         }
 
         function initializeSliders() {
@@ -4956,6 +5004,12 @@
             console.log('Botones encontrados:', { desktopBtn, tabletBtn, mobileBtn });
 
             function setActiveDevice(device, button) {
+        // Si estamos en modo editor, forzar desktop
+        if (!document.body.classList.contains('preview-only-mode')) {
+            device = 'desktop';
+            button = document.getElementById('desktopBtn');
+        }
+
                 console.log('Cambiando a dispositivo:', device);
                 // Remover active de todos los botones
                 document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
@@ -7396,8 +7450,8 @@
                 console.log('Finding corresponding cell for:', cell);
                 
                 // Determinar si es desktop o mobile más ampliamente
-                const isDesktop = cell.classList.contains('editable-cell') || cell.closest('.tabla-precios-orbita') || cell.closest('.fila-datos-orbita');
-                const isMobile = cell.classList.contains('editable-cell-mobile') || cell.closest('.celda-precio-mobile-orbita') || cell.closest('.fila-datos-mobile-orbita');
+                const isDesktop = cell.classList.contains('editable-cell') || cell.closest('.tabla-precios-orbita') || cell.closest('.fila-datos-orbita') || cell.classList.contains('celda-dato-orbita');
+                const isMobile = cell.classList.contains('editable-cell-mobile') || cell.closest('.celda-precio-mobile-orbita') || cell.closest('.fila-datos-mobile-orbita') || cell.classList.contains('celda-precio-mobile-orbita');
                 
                 console.log('Cell type:', { isDesktop, isMobile, classes: cell.className });
                 
@@ -7894,14 +7948,19 @@
         localStorage.setItem('previewMode', 'true');
     }
 
-            // Actualizar vista
-            if (mode === 'preview') {
-                document.body.classList.add('preview-only-mode');
-                // Desactivar modo edición
-                const previewModeToggle = document.getElementById('previewModeToggle');
-                if (previewModeToggle && previewModeToggle.checked) {
-                    previewModeToggle.click();
-                }
+                // Actualizar vista
+    if (mode === 'preview') {
+        document.body.classList.add('preview-only-mode');
+        // Ocultar botones de eliminar
+        document.querySelectorAll('.preview-delete-button').forEach(button => {
+            button.style.display = 'none';
+        });
+        // Desactivar modo edición
+        const previewModeToggle = document.getElementById('previewModeToggle');
+        if (previewModeToggle && previewModeToggle.checked) {
+            previewModeToggle.checked = false;
+            togglePreviewMode(false);
+        }
                 // Mostrar selector de dispositivos
                 const viewSelectorGroup = document.querySelector('.view-selector-group');
                 if (viewSelectorGroup) {
@@ -7968,7 +8027,7 @@
                 const previewContent = document.querySelector('.preview-content');
                 if (previewContent) {
                     previewContent.style.cssText = `
-                        max-width: 1200px !important;
+                        max-width: 900px !important;
                         width: 100% !important;
                         margin: 0 auto !important;
                         padding: 20px !important;
@@ -7980,7 +8039,7 @@
                     tablaContainer.style.cssText = `
                         margin: 0 auto !important;
                         width: 100% !important;
-                        max-width: 1200px !important;
+                        max-width: 900px !important;
                     `;
                 }
                 } else {
@@ -7989,6 +8048,11 @@
         const viewSelectorGroup = document.querySelector('.view-selector-group');
         if (viewSelectorGroup) {
             viewSelectorGroup.style.display = 'none';
+        }
+        // Forzar vista desktop
+        const desktopBtn = document.getElementById('desktopBtn');
+        if (desktopBtn) {
+            desktopBtn.click();
         }
         // Restaurar todos los elementos
         [
@@ -8012,16 +8076,16 @@
             }
         });
         
-        // Activar el modo edición
+        // Activar modo edición y mostrar botones de eliminar
         const previewModeToggle = document.getElementById('previewModeToggle');
-        if (previewModeToggle && !previewModeToggle.checked) {
+        if (previewModeToggle) {
             previewModeToggle.checked = true;
             togglePreviewMode(true);
-        }
-        // Forzar la adición de los botones de eliminar
-        setTimeout(() => {
+            // Eliminar botones existentes antes de recrearlos
+            document.querySelectorAll('.preview-delete-button').forEach(button => button.remove());
+            // Recrear los botones de eliminar
             addDeleteButtons();
-        }, 100);
+        }
             }
 
             // En mobile, solo permitir modo preview
@@ -10382,47 +10446,29 @@ ${generateSoldOutCSS()}`;
         }
 
         function syncCellContent(cell, newValue) {
-            // Encontrar la fila padre
-            const row = cell.closest('.fila-datos-orbita') || cell.closest('.fila-datos-mobile-orbita');
-            if (!row) return;
+            // Encontrar la celda correspondiente usando la función existente
+            const correspondingCell = findCorrespondingCellSimple(cell);
             
-            // Determinar si estamos en desktop o mobile
-            const isDesktop = row.classList.contains('fila-datos-orbita');
-            
-            // Obtener el índice de la fila
-            const rowIndex = Array.from(row.parentElement.children).indexOf(row);
-            
-            // Obtener el índice de la celda dentro de su contenedor
-            let cellIndex;
-            if (isDesktop) {
-                const cells = row.querySelectorAll('.editable-cell');
-                cellIndex = Array.from(cells).indexOf(cell);
-            } else {
-                const cells = row.querySelectorAll('.editable-cell-mobile');
-                cellIndex = Array.from(cells).indexOf(cell);
-            }
-            
-            if (cellIndex === -1) return;
-            
-            // Sincronizar el contenido
-            if (isDesktop) {
-                // Actualizar mobile
-                const mobileRows = document.querySelectorAll('.fila-datos-mobile-orbita');
-                if (mobileRows[rowIndex]) {
-                    const mobileCells = mobileRows[rowIndex].querySelectorAll('.editable-cell-mobile');
-                    if (mobileCells[cellIndex]) {
-                        mobileCells[cellIndex].textContent = newValue;
+            // Si encontramos la celda correspondiente, actualizar su contenido
+            if (correspondingCell) {
+                // Actualizar el contenido de la celda correspondiente
+                const targetElement = correspondingCell.querySelector('span') || correspondingCell;
+                targetElement.textContent = newValue;
+                
+                // Si la celda tiene estado "Agotado", mantener ese estado
+                if (cell.classList.contains('cell-sold-out')) {
+                    correspondingCell.classList.add('cell-sold-out');
+                    if (cell.hasAttribute('data-original-price')) {
+                        correspondingCell.setAttribute('data-original-price', cell.getAttribute('data-original-price'));
                     }
                 }
-            } else {
-                // Actualizar desktop
-                const desktopRows = document.querySelectorAll('.fila-datos-orbita');
-                if (desktopRows[rowIndex]) {
-                    const desktopCells = desktopRows[rowIndex].querySelectorAll('.editable-cell');
-                    if (desktopCells[cellIndex]) {
-                        desktopCells[cellIndex].textContent = newValue;
+                
+                // Copiar otros atributos importantes
+                ['style', 'data-header'].forEach(attr => {
+                    if (cell.hasAttribute(attr)) {
+                        correspondingCell.setAttribute(attr, cell.getAttribute(attr));
                     }
-                }
+                });
             }
         }
 
@@ -10567,3 +10613,4 @@ ${generateSoldOutCSS()}`;
     </div>
 </body>
 </html>
+
