@@ -4776,28 +4776,53 @@
 
         function togglePreviewMode(enabled) {
             const previewSection = document.getElementById('previewSection');
+            if (!previewSection) return; // Esperar a que exista el elemento
+
+            // Forzar la activación al inicio
+            enabled = enabled !== false;
+
             if (enabled) {
                 previewSection.classList.add('preview-mode');
-                addDeleteButtons();
+                // Asegurarse de que los botones se agreguen
+                setTimeout(() => {
+                    if (previewSection.classList.contains('preview-mode')) {
+                        addDeleteButtons();
+                    }
+                }, 100);
             } else {
                 previewSection.classList.remove('preview-mode');
                 document.querySelectorAll('.preview-delete-button').forEach(btn => btn.remove());
             }
 
             // Actualizar el estado del toggle en el localStorage
-            localStorage.setItem('previewMode', enabled ? 'true' : 'false');
+            localStorage.setItem('previewMode', 'true'); // Siempre guardar como true
+            
+            // Asegurarse de que el checkbox esté marcado
+            const previewModeToggle = document.getElementById('previewModeToggle');
+            if (previewModeToggle) {
+                previewModeToggle.checked = true;
+            }
         }
 
-        // Activar el modo edición por defecto y restaurar el estado
-        document.addEventListener('DOMContentLoaded', () => {
-            // Establecer el modo edición como activo por defecto si no hay estado guardado
-            const previewMode = localStorage.getItem('previewMode') !== 'false';
+        // Función para activar el modo edición
+        function initPreviewMode() {
+            const previewMode = true; // Siempre activado por defecto
             const previewModeToggle = document.getElementById('previewModeToggle');
             if (previewModeToggle) {
                 previewModeToggle.checked = previewMode;
                 togglePreviewMode(previewMode);
             }
-        });
+        }
+
+        // Activar el modo edición inmediatamente y también cuando se cargue el DOM
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initPreviewMode);
+        } else {
+            initPreviewMode();
+        }
+
+        // También activar cuando se cargue la página completamente
+        window.addEventListener('load', initPreviewMode);
 
         function updatePreviewForDevice(device) {
             const previewSection = document.getElementById('previewSection');
