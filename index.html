@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editor de Tabla - Loveable CMS</title>
     <style>
+        /* Font Awesome CDN */
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+        
         :root {
             --background: 0 0% 100%;
             --foreground: 222.2 84% 4.9%;
@@ -221,7 +224,7 @@
 
         .preview-section {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -2034,6 +2037,224 @@
             background: hsl(var(--secondary) / 0.8);
         }
 
+            /* Estilos para el selector de vista */
+    .view-mode-selector {
+        display: flex;
+        align-items: center;
+        background: #FFFFFF;
+        border-radius: 20px;
+        padding: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-right: 10px;
+        border: 1px solid #E0E0E0;
+    }
+
+    .view-mode-button {
+        display: flex;
+        align-items: center;
+        padding: 6px 12px;
+        border-radius: 16px;
+        border: 1px solid transparent;
+        background: transparent;
+        cursor: pointer;
+        font-size: 14px;
+        color: #333;
+        transition: all 0.2s ease;
+        margin: 0;
+    }
+
+    .view-mode-button:hover {
+        background: #F5F5F5;
+    }
+
+    .view-mode-button.active {
+        background: #F0F0F0;
+        border-color: #D0D0D0;
+    }
+
+    .view-mode-button i {
+        margin-right: 6px;
+        font-size: 16px;
+    }
+
+    /* Estilos para los modos de vista */
+    body.preview-only-mode {
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow-x: hidden !important;
+        min-height: 100vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        background-color: #EFEFEF !important;
+    }
+
+    /* Ocultar completamente todos los elementos del panel */
+    body.preview-only-mode .table-maker-settings,
+    body.preview-only-mode .preview-controls,
+    body.preview-only-mode .panel-container,
+    body.preview-only-mode .panel-tabs,
+    body.preview-only-mode .panel-content,
+    body.preview-only-mode .panel,
+    body.preview-only-mode .right-panel,
+    body.preview-only-mode .panel-wrapper,
+    body.preview-only-mode [class*="panel"] {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+        flex: 0 0 0 !important;
+    }
+
+    /* Ajustar el contenedor principal */
+    body.preview-only-mode .main-container {
+        display: flex !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        justify-content: center !important;
+        flex: 1 !important;
+    }
+
+    /* Ajustar el wrapper del contenido */
+    body.preview-only-mode .content-wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        flex: 1 !important;
+    }
+
+    /* Ajustar la sección de preview */
+    body.preview-only-mode .preview-section {
+        width: 100% !important;
+        max-width: 1200px !important;
+        margin: 0 !important;
+        padding: 20px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
+        flex: 1 !important;
+    }
+
+    /* Ajustar el contenido del preview */
+    body.preview-only-mode .preview-content {
+        width: 100% !important;
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+
+    /* Ajustar el contenedor de la tabla */
+    body.preview-only-mode .tabla-orbita-container {
+        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 900px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    /* Asegurar que el contenido se centre cuando el panel derecho está oculto */
+    body.preview-only-mode .main-content {
+        margin: 0 auto !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
+    }
+
+    /* Ocultar selector de dispositivos y controles en modo editor */
+    body:not(.preview-only-mode) .view-selector-group,
+    body:not(.preview-only-mode) .preview-controls,
+    body:not(.preview-only-mode) .view-controls,
+    body:not(.preview-only-mode) [class*="view-selector"],
+    body:not(.preview-only-mode) .device-selector {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: absolute !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+    }
+
+    /* Eliminar cualquier espacio residual del panel */
+    body.preview-only-mode .main-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+        flex: 1 !important;
+    }
+
+    body.preview-only-mode .main-content > div {
+        width: 100% !important;
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+    }
+
+    /* Asegurar que no haya espacios residuales */
+    body.preview-only-mode * {
+        margin-right: 0 !important;
+    }
+
+    /* Forzar el layout correcto */
+    body.preview-only-mode .preview-wrapper {
+        width: 100% !important;
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+
+    /* Mostrar selector de dispositivos en modo preview */
+    body.preview-only-mode .view-selector-group {
+        display: flex !important;
+    }
+
+    /* Ajustar espaciado en modo editor */
+    body:not(.preview-only-mode) .preview-section {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    body:not(.preview-only-mode) .preview-content {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    body:not(.preview-only-mode) .tabla-orbita-container {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    @media (max-width: 768px) {
+        .view-mode-button[data-mode="editor"] {
+            display: none;
+        }
+        }
+
         /* Botón Mostrar Código en header */
         .show-code-btn {
             padding: 8px 16px;
@@ -3717,6 +3938,14 @@
                     </button>
             </div>
             <div class="header-buttons">
+                <div class="view-mode-selector">
+                    <button class="view-mode-button active" data-mode="editor" onclick="setViewMode('editor', this)">
+                        <i class="fas fa-pencil-alt"></i>Editor
+                    </button>
+                    <button class="view-mode-button" data-mode="preview" onclick="setViewMode('preview', this)">
+                        <i class="fas fa-eye"></i>Preview
+                    </button>
+                </div>
                 <button class="import-code-btn" id="importCodeBtn" onclick="mostrarModalImportar()" style="display: none !important;">📥 Importar Código</button>
                 <button class="show-code-btn" id="showCodeBtn" onclick="mostrarCodigoDirecto()">📋 Mostrar Código</button>
             </div>
@@ -4816,7 +5045,18 @@
 
         // Activar el modo edición inmediatamente y también cuando se cargue el DOM
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initPreviewMode);
+            document.addEventListener('DOMContentLoaded', () => {
+            // Inicializar el modo de vista
+            const isMobile = window.innerWidth <= 768;
+            const defaultMode = isMobile ? 'preview' : 'editor';
+            const button = document.querySelector(`.view-mode-button[data-mode="${defaultMode}"]`);
+            if (button) {
+                setViewMode(defaultMode, button);
+            }
+
+            // Inicializar el modo edición
+            initPreviewMode();
+        });
         } else {
             initPreviewMode();
         }
@@ -7640,6 +7880,158 @@
         }
 
         // ========== FUNCIONALIDAD PARA MOSTRAR CÓDIGO ==========
+        
+        // Función para cambiar el modo de vista
+        function setViewMode(mode, button) {
+    // Actualizar botones
+    document.querySelectorAll('.view-mode-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    button.classList.add('active');
+    
+    // Guardar el estado del modo edición
+    if (mode === 'editor') {
+        localStorage.setItem('previewMode', 'true');
+    }
+
+            // Actualizar vista
+            if (mode === 'preview') {
+                document.body.classList.add('preview-only-mode');
+                // Desactivar modo edición
+                const previewModeToggle = document.getElementById('previewModeToggle');
+                if (previewModeToggle && previewModeToggle.checked) {
+                    previewModeToggle.click();
+                }
+                // Mostrar selector de dispositivos
+                const viewSelectorGroup = document.querySelector('.view-selector-group');
+                if (viewSelectorGroup) {
+                    viewSelectorGroup.style.display = 'flex';
+                }
+                // Ocultar todos los elementos del panel
+                [
+                    '.table-maker-settings',
+                    '.preview-controls',
+                    '.panel-container',
+                    '.panel-tabs',
+                    '.panel-content',
+                    '.panel',
+                    '.right-panel'
+                ].forEach(selector => {
+                    const element = document.querySelector(selector);
+                    if (element) {
+                        element.style.cssText = `
+                            display: none !important;
+                            visibility: hidden !important;
+                            width: 0 !important;
+                            height: 0 !important;
+                            padding: 0 !important;
+                            margin: 0 !important;
+                            overflow: hidden !important;
+                            position: absolute !important;
+                            pointer-events: none !important;
+                            opacity: 0 !important;
+                        `;
+                    }
+                });
+                // Ajustar el contenedor principal y sus elementos
+                const mainContainer = document.querySelector('.main-container');
+                if (mainContainer) {
+                    mainContainer.style.cssText = `
+                        display: block !important;
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    `;
+                }
+                const contentWrapper = document.querySelector('.content-wrapper');
+                if (contentWrapper) {
+                    contentWrapper.style.cssText = `
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        width: 100% !important;
+                        max-width: 100% !important;
+                    `;
+                }
+                const previewSection = document.querySelector('.preview-section');
+                if (previewSection) {
+                    previewSection.style.cssText = `
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        display: flex !important;
+                        justify-content: center !important;
+                        align-items: flex-start !important;
+                    `;
+                }
+                const previewContent = document.querySelector('.preview-content');
+                if (previewContent) {
+                    previewContent.style.cssText = `
+                        max-width: 1200px !important;
+                        width: 100% !important;
+                        margin: 0 auto !important;
+                        padding: 20px !important;
+                        box-sizing: border-box !important;
+                    `;
+                }
+                const tablaContainer = document.querySelector('.tabla-orbita-container');
+                if (tablaContainer) {
+                    tablaContainer.style.cssText = `
+                        margin: 0 auto !important;
+                        width: 100% !important;
+                        max-width: 1200px !important;
+                    `;
+                }
+                } else {
+        document.body.classList.remove('preview-only-mode');
+        // Ocultar selector de dispositivos
+        const viewSelectorGroup = document.querySelector('.view-selector-group');
+        if (viewSelectorGroup) {
+            viewSelectorGroup.style.display = 'none';
+        }
+        // Restaurar todos los elementos
+        [
+            '.table-maker-settings',
+            '.preview-controls',
+            '.panel-container',
+            '.panel-tabs',
+            '.panel-content',
+            '.panel',
+            '.right-panel',
+            '.main-container',
+            '.content-wrapper',
+            '.preview-section',
+            '.preview-content',
+            '.tabla-orbita-container'
+        ].forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.style.cssText = '';
+                element.removeAttribute('style');
+            }
+        });
+        
+        // Activar el modo edición
+        const previewModeToggle = document.getElementById('previewModeToggle');
+        if (previewModeToggle && !previewModeToggle.checked) {
+            previewModeToggle.checked = true;
+            togglePreviewMode(true);
+        }
+        // Forzar la adición de los botones de eliminar
+        setTimeout(() => {
+            addDeleteButtons();
+        }, 100);
+            }
+
+            // En mobile, solo permitir modo preview
+            if (window.innerWidth <= 768 && mode === 'editor') {
+                const previewButton = document.querySelector('.view-mode-button[data-mode="preview"]');
+                if (previewButton) {
+                    previewButton.click();
+                }
+            }
+        }
         
         // Variables globales para el código
         let generatedCode = '';
